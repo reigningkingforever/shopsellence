@@ -1,4 +1,5 @@
 var woof_redirect = '';//if we use redirect attribute in shortcode [woof]
+var woof_reset_btn_action=false;
 //***
 
 jQuery(function ($) {
@@ -39,6 +40,7 @@ jQuery(function ($) {
 
 
     jQuery('body').bind('price_slider_change', function (event, min, max) {
+
 	if (woof_autosubmit && !woof_show_price_search_button && jQuery('.price_slider_wrapper').length < 2) {
 
 	    jQuery('.woof .widget_price_filter form').trigger('submit');
@@ -309,7 +311,7 @@ function woof_init_orderby() {
         if(!jQuery("#is_woo_shortcode").length){
             woof_current_values.orderby = jQuery(this).val();
             woof_ajax_page_num = 1;
-            woof_submit_link(woof_get_submit_link());
+            woof_submit_link(woof_get_submit_link(),0);
             return false;
         }
         /* +++ */
@@ -321,6 +323,7 @@ function woof_init_reset_button() {
 	//var link = jQuery(this).data('link');
 	woof_ajax_page_num = 1;
         woof_ajax_redraw = 0; 
+        woof_reset_btn_action=true;
 	if (woof_is_permalink) {
 	    woof_current_values = {};           
 	    woof_submit_link(woof_get_submit_link().split("page/")[0]);
@@ -354,7 +357,7 @@ function woof_init_pagination() {
 	    var l = jQuery(this).attr('href');
 
 	    if (woof_ajax_first_done) {
-		//http://woocommerce-filter.pluginus.net/wp-admin/admin-ajax.php?paged=2
+		//wp-admin/admin-ajax.php?paged=2
 		var res = l.split("paged=");
 		if (typeof res[1] !== 'undefined') {
 		    woof_ajax_page_num = parseInt(res[1]);
@@ -366,7 +369,6 @@ function woof_init_pagination() {
 		    woof_ajax_page_num = parseInt(res2[1]);
 		}
 	    } else {
-		//http://woocommerce-filter.pluginus.net/tester/page/2/
 		var res = l.split("page/");
 		if (typeof res[1] !== 'undefined') {
 		    woof_ajax_page_num = parseInt(res[1]);
@@ -383,7 +385,7 @@ function woof_init_pagination() {
 
 	    //if (woof_autosubmit) - pagination doesn need pressing any submit button!!
 	    {
-		woof_submit_link(woof_get_submit_link());
+		woof_submit_link(woof_get_submit_link(),0);
 	    }
 
 	    return false;
@@ -412,7 +414,7 @@ function woof_init_search_form() {
     jQuery('.woof_submit_search_form').click(function () {
 
 	if (woof_ajax_redraw) {
-	    //[woof redirect="http://www.dev.woocommerce-filter.com/test-all/" autosubmit=1 ajax_redraw=1 is_ajax=1 tax_only="locations" by_only="none"]
+	    //[woof redirect="http://test-all/" autosubmit=1 ajax_redraw=1 is_ajax=1 tax_only="locations" by_only="none"]
 	    woof_ajax_redraw = 0;
 	    woof_is_ajax = 0;
 	}
@@ -433,17 +435,25 @@ function woof_init_search_form() {
 }
 
 var woof_submit_link_locked = false;
-function woof_submit_link(link) {
+function woof_submit_link(link,ajax_redraw) {
     
 
     if (woof_submit_link_locked) {
 	return;
     }
+    if(typeof WoofTurboMode!='undefined'){
+        WoofTurboMode.woof_submit_link(link);
+        
+        return;
+    }
+    if(typeof ajax_redraw == 'undefined' ){
+        ajax_redraw=woof_ajax_redraw;
+    }    
 
     woof_submit_link_locked = true;
     woof_show_info_popup(woof_lang_loading);
 
-    if (woof_is_ajax === 1 && !woof_ajax_redraw) {
+    if (woof_is_ajax === 1 && !ajax_redraw)  {
         
 	woof_ajax_first_done = true;
 	var data = {
@@ -489,7 +499,7 @@ function woof_submit_link(link) {
 
     } else {
 
-	if (woof_ajax_redraw) {
+	if (ajax_redraw) {
 	    //redrawing [woof ajax_redraw=1] only
 	    var data = {
 		action: "woof_draw_products",
@@ -503,6 +513,8 @@ function woof_submit_link(link) {
 		jQuery('div.woof_redraw_zone').replaceWith(jQuery(content.form).find('.woof_redraw_zone'));
 		woof_mass_reinit();
 		woof_submit_link_locked = false;
+                /*tooltip*/
+                woof_init_tooltip();                
 	    });
 	} else {
 
@@ -558,6 +570,7 @@ function woof_get_submit_link() {
     //***
     if (Object.keys(woof_current_values).length === 2) {
 	if (('min_price' in woof_current_values) && ('max_price' in woof_current_values)) {
+            woof_current_page_link = woof_current_page_link.replace(new RegExp(/page\/(\d+)\//), "");
 	    var l = woof_current_page_link + '?min_price=' + woof_current_values.min_price + '&max_price=' + woof_current_values.max_price;
 	    if (woof_is_ajax) {
 		history.pushState({}, "", l);
@@ -616,7 +629,7 @@ function woof_get_submit_link() {
 		index = 'paged';//for right pagination if copy/paste this link and send somebody another by email for example
 	    }
 
-	    //http://www.dev.woocommerce-filter.com/?swoof=1&woof_author=3&woof_sku&woof_text=single
+	    //http://dev.products-filter.com/?swoof=1&woof_author=3&woof_sku&woof_text=single
 	    //avoid links where values is empty
 	    if (typeof value !== 'undefined') {
 		if ((typeof value && value.length > 0) || typeof value == 'number')
@@ -780,7 +793,7 @@ function woof_draw_products_top_panel() {
 
 		panel.find('ul').append(
 			jQuery('<li>').append(
-			jQuery('<a>').attr('href', v).attr('data-tax', index).append(
+			jQuery('<a>').attr('href', "").attr('data-tax', index).attr('data-slug', v).append(
 			jQuery('<span>').attr('class', 'woof_remove_ppi').append(txt)
 			)));
 
@@ -798,7 +811,8 @@ function woof_draw_products_top_panel() {
     //+++
     jQuery('.woof_remove_ppi').parent().click(function () {
 	var tax = jQuery(this).data('tax');
-	var name = jQuery(this).attr('href');
+        var name = jQuery(this).data('slug');
+	//var name = jQuery(this).attr('href');
 
 	//***
 
@@ -823,6 +837,7 @@ function woof_draw_products_top_panel() {
 	}
 
 	woof_ajax_page_num = 1;
+        woof_reset_btn_action=true;
 	//if (woof_autosubmit)
 	{
 	    woof_submit_link(woof_get_submit_link());
@@ -937,26 +952,28 @@ function woof_init_hide_auto_form() {
 //if we have mode - child checkboxes closed - append openers buttons by js
 function woof_checkboxes_slide() {
     if (woof_checkboxes_slide_flag == true) {
-	var childs = jQuery('ul.woof_childs_list');
-	if (childs.length) {
-	    jQuery.each(childs, function (index, ul) {
+        var childs = jQuery('ul.woof_childs_list');
+        if (childs.length) {
+            jQuery.each(childs, function (index, ul) {
 
-		if (jQuery(ul).parents('.woof_no_close_childs').length) {
-		    return;
-		}
+                if (jQuery(ul).parents('.woof_no_close_childs').length) {
+                    return;
+                }
 
 
                 var span_class = 'woof_is_closed';
-                if(woof_supports_html5_storage()){ 
+                if (woof_supports_html5_storage()) {
                     //test mode  from 06.11.2017
-                         var preulstate=localStorage.getItem( jQuery(ul).closest('li').find('label').first().text());
-                        if(preulstate && preulstate=='woof_is_opened'){
-                           var span_class='woof_is_opened';
-                           jQuery(ul).show();
-                        }
-                        jQuery(ul).before('<a href="javascript:void(0);" class="woof_childs_list_opener"><span class="' + span_class + '"></span></a>');
+                    //console.log(jQuery(ul).closest('li').attr("class"));
+                   // var preulstate = localStorage.getItem(jQuery(ul).closest('li').find('label').first().text());
+                    var preulstate = localStorage.getItem(jQuery(ul).closest('li').attr("class"));
+                    if (preulstate && preulstate == 'woof_is_opened') {
+                        var span_class = 'woof_is_opened';
+                        jQuery(ul).show();
+                    }
+                    jQuery(ul).before('<a href="javascript:void(0);" class="woof_childs_list_opener"><span class="' + span_class + '"></span></a>');
                     //++   
-                }else{
+                } else {
                     if (jQuery(ul).find('input[type=checkbox],input[type=radio]').is(':checked')) {
                         jQuery(ul).show();
                         span_class = 'woof_is_opened';
@@ -964,35 +981,38 @@ function woof_checkboxes_slide() {
                     jQuery(ul).before('<a href="javascript:void(0);" class="woof_childs_list_opener"><span class="' + span_class + '"></span></a>');
 
                 }
- 
+
             });
 
-	    jQuery.each(jQuery('a.woof_childs_list_opener'), function (index, a) {
-		jQuery(a).click(function () {
-		    var span = jQuery(this).find('span');
-		    if (span.hasClass('woof_is_closed')) {
-			//lets open
-			jQuery(this).parent().find('ul.woof_childs_list').first().show(333);
-			span.removeClass('woof_is_closed');
-			span.addClass('woof_is_opened');
-		    } else {
-			//lets close
-			jQuery(this).parent().find('ul.woof_childs_list').first().hide(333);
-			span.removeClass('woof_is_opened');
-			span.addClass('woof_is_closed');
-		    }
-                    
-                    if(woof_supports_html5_storage()){ 
+            jQuery.each(jQuery('a.woof_childs_list_opener span'), function (index, a) {
+
+                jQuery(a).click(function () {
+                    var span = jQuery(this);
+                    var this_ = jQuery(this).parent(".woof_childs_list_opener");
+                    if (span.hasClass('woof_is_closed')) {
+                        //lets open
+                        jQuery(this_).parent().find('ul.woof_childs_list').first().show(333);
+                        span.removeClass('woof_is_closed');
+                        span.addClass('woof_is_opened');
+                    } else {
+                        //lets close
+                        jQuery(this_).parent().find('ul.woof_childs_list').first().hide(333);
+                        span.removeClass('woof_is_opened');
+                        span.addClass('woof_is_closed');
+                    }
+
+                    if (woof_supports_html5_storage()) {
                         //test mode  from 06.11.2017
-                        var ullabel=jQuery(this).closest("li").find("label").first().text();
-                        var ullstate=jQuery(this).children("span").attr("class");
-                        localStorage.setItem(ullabel,ullstate);
+                      //  var ullabel = jQuery(this_).closest("li").find("label").first().text();
+                        var ullabel =jQuery(this_).closest('li').attr("class");
+                        var ullstate = jQuery(this_).children("span").attr("class");
+                        localStorage.setItem(ullabel, ullstate);
                         //++  
                     }
-		    return false;
-		});
-	    });
-	}
+                    return false;
+                });
+            });
+        }
     }
 }
 
@@ -1047,7 +1067,7 @@ function woof_init_native_woo_price_filter() {
 	woof_ajax_page_num = 1;
 	if (woof_autosubmit || jQuery(input).within('.woof').length == 0) {
 	    //comment next code row to avoid endless ajax requests
-	    woof_submit_link(woof_get_submit_link());
+	    woof_submit_link(woof_get_submit_link(),0);
 	}
 	return false;
     });
@@ -1478,9 +1498,14 @@ function woof_supports_html5_storage() {
 }
 
 function woof_init_tooltip(){
-    jQuery(".woof_tooltip_header").tooltipster({
-            theme: 'tooltipster-noir',
-            side: 'right'
-        });
+    var tooltips=jQuery(".woof_tooltip_header")
+
+    if(tooltips.length){
+
+        jQuery(tooltips).tooltipster({
+                theme: 'tooltipster-noir',
+                side: 'right'
+            });
+    }    
 
 }

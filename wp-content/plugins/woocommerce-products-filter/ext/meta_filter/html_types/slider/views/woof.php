@@ -38,7 +38,7 @@ if(!empty($current_request)){
 //Check if slider has  products in current request
  $count = 0;
  $show=true;
- $hide_dynamic_empty_pos = get_option('woof_hide_dynamic_empty_pos', 0);
+ $hide_dynamic_empty_pos = 0;
  if (empty($current_request))
  {
      if ( $hide_dynamic_empty_pos)

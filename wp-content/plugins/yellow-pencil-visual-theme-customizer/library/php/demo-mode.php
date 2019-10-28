@@ -18,7 +18,7 @@ add_action("template_redirect", 'yp_theme_redirect');
 function yp_theme_redirect(){
 
 	if(defined('YP_DEMO_MODE') && isset($_GET['yellow_pencil']) == true){
-		$yellow_pencil = WT_PLUGIN_DIR . '/library/php/frame.php';
+		$yellow_pencil = WT_PLUGIN_DIR . '/library/php/editor-redirect.php';
 		yp_do_theme_redirect($yellow_pencil);
 	}
 	
@@ -31,7 +31,7 @@ add_action("template_redirect", 'yp_theme_redirect2');
 function yp_theme_redirect2(){
 
 	if(defined('YP_DEMO_MODE') && isset($_GET['yp_customize_type']) == true){
-		$yellow_pencil = WT_PLUGIN_DIR . '/library/php/popup.php';
+		$yellow_pencil = WT_PLUGIN_DIR . '/library/php/customize-popup.php';
 		yp_do_theme_redirect($yellow_pencil);
 	}
 	

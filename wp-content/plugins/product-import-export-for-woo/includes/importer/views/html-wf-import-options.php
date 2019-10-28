@@ -106,11 +106,19 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <select name="map_from[<?php echo $key; ?>]">
                             <option value=""><?php _e('Do not import', 'product-import-export-for-woo'); ?></option>
                             <?php
+                            if ($wt_has_large_number_of_columns_in_csv) {
+                                if (isset($raw_headers[$key])) {
+                                    $hdr = strlen($row[$key]) > 50 ? substr(strip_tags($row[$key]), 0, 50) . "..." : $row[$key];
+                                    ?>
+                                    <option value="<?php echo $raw_headers[$key]; ?>" <?php selected(strtolower($sel_key), $key); ?>><?php echo $raw_headers[$key] . " &nbsp;  : &nbsp; " . $hdr; ?></option>
+                                    <?php
+                                }
+                            } else {
                             foreach ($row as $hkey => $hdr):
                                 $hdr = strlen($hdr) > 50 ? substr(strip_tags($hdr), 0, 50) . "..." : $hdr;
                                 ?>
                                 <option value="<?php echo $raw_headers[$hkey]; ?>" <?php selected(strtolower($sel_key), $hkey); ?>><?php echo $raw_headers[$hkey] . " &nbsp;  : &nbsp; " . $hdr; ?></option>
-                            <?php endforeach; ?>
+                            <?php endforeach; }?>
                         </select>
                         <?php do_action('woocommerce_csv_product_data_mapping', $key); ?>
                     </td>

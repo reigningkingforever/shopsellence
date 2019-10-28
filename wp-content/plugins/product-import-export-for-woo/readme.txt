@@ -1,10 +1,10 @@
 === Product Import Export for WooCommerce===
 Contributors: webtoffee
 Donate link: https://www.webtoffee.com/plugins/
-Tags: woocommerce product import, woocommerce import products, woocommerce export products, export woocommerce products, import products into woocommerce
+Tags: woocommerce product import, woocommerce import products, woocommerce export products, export woocommerce products, import products into woocommerce ,product, export, import, woocommerce ,csv
 Requires at least: 3.0.1
-Tested up to: 5.2
-Stable tag: 1.6.1
+Tested up to: 5.2.3
+Stable tag: 1.6.8
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -20,7 +20,7 @@ Product import export plugin allows you to import or export WooCommerce simple p
 
 &#128312; Export Simple Products  in to a CSV file.
 &#128312; Import Simple Products in CSV format in to WooCommerce Store.
-&#128312; Tested OK with WooCommerce 3.6.3.
+&#128312; Tested OK with WooCommerce 3.7.1.
 
 
 Highlights: WooCommerce Product Export, WooCommerce Product CSV Import Suite, WooCommerce bulk product upload, WooCommerce import products with images, import amazon products to WooCommerce, Export Products to xls. Pro Version supports both Simple and Variable products.
@@ -39,21 +39,21 @@ You can create the CSV from scratch or you can export the product to get the for
 = Premium version Features =
 Product Import Export Plugin for WooCommerce is the leading tool for Woocommerce product export and WooCommerce product import. Some of the major features are listed below
 
-<ul>
-<li> &#9989; Export/Import simple, group, external and variation products.</li>
-<li> &#9989; Export products by category.</li>
-<li> &#9989; Import/Export product reviews..</li>
-<li> &#9989; Various filter options for exporting products. </li>
-<li> &#9989; Map and transform fields during import.</li>
-<li> &#9989; Manipulate/evaluate data during import.</li>
-<li> &#9989; Choice to Update or Skip existing imported products. </li>
-<li> &#9989; WPML support for simple products.</li>
-<li> &#9989; Import/Export file via FTP.</li>
-<li> &#9989; Import from URL.</li>
-<li> &#9989; Automatic scheduled import and export.</li>
-<li> &#9989; Supports product reviews export and import.</li>
-<li> &#9989; Third party plugin customization support.</li>
-</ul>
+
+ &#9989; Export/Import simple, group, external and variation products.</li>
+ &#9989; Export products by category.</li>
+ &#9989; Import/Export product reviews..</li>
+ &#9989; Various filter options for exporting products. </li>
+ &#9989; Map and transform fields during import.</li>
+ &#9989; Manipulate/evaluate data during import.</li>
+ &#9989; Choice to Update or Skip existing imported products. </li>
+ &#9989; WPML support for simple products.</li>
+ &#9989; Import/Export file via FTP.</li>
+ &#9989; Import from URL.</li>
+ &#9989; Automatic scheduled import and export.</li>
+ &#9989; Supports product reviews export and import.</li>
+ &#9989; Third party plugin customization support.</li>
+
 
 Please visit <a rel="nofollow" href="https://www.webtoffee.com/product/product-import-export-woocommerce/">Product Import Export Plugin for WooCommerce</a> for more details
 
@@ -139,6 +139,10 @@ Yes. You can import or export product images along with other details
 
 LibreOffice.
 
+= Are you redirected to dashboard or login page while exporting? =
+
+By default, admin and store manager are given access to export orders from your store. Please visit <a rel="nofollow" href="https://www.webtoffee.com/how-to-export-woocommerce-items-without-user-role-restriction/">How to export WooCommerce items without user role restriction</a> for more details 
+
 == Screenshots ==
 
 1. WooCommerce Product Import Screen
@@ -148,6 +152,33 @@ LibreOffice.
 3. Premium Export Settings Screen
 
 == Changelog ==
+
+= 1.6.8 =
+* Bug Fix: Duplicating SKU when updating product with ID
+* Tested OK with WC 3.7.1
+
+= 1.6.7 =
+* Content Update.
+
+= 1.6.6 =
+* Content Update.
+* Tested OK with WP 5.2.3
+
+= 1.6.5 =
+* Enhancement: Added 'tab' and 'space' delimiter support for import CSV.
+* Bug Fix: Improved error handling for file upload issues.
+* Plugin update information hook added.
+
+= 1.6.4 =
+* Tested OK with WC 3.7.0
+
+= 1.6.3 =
+* Tested OK with WC 3.6.5
+
+= 1.6.2 =
+* Tested OK with WC 3.6.4 and WP 5.2.2
+* Content update.
+* Bug Fix.
 
 = 1.6.1 =
 * Tested OK with WC 3.6.3 and WP 5.2
@@ -311,7 +342,3 @@ LibreOffice.
 
 
 == Upgrade Notice ==
-
-= 1.6.1 =
-* Tested OK with WC 3.6.3 and WP 5.2
-* Content update.

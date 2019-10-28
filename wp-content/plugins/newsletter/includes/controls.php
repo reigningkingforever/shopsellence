@@ -258,6 +258,13 @@ class NewsletterControls {
         'YE' => 'Yemen',
         'ZM' => 'Zambia',
         'ZW' => 'Zimbabwe',
+        'XX' => 'Undefined',
+        
+        'CW' => 'Curaçao',
+        'SS' => 'South Sudan',
+        'EU' => 'Europe (generic)',
+        'A1' => 'Anonymous IP',
+        'A2' => 'Satellite IP'
     );
 
     function __construct($options = null) {
@@ -435,7 +442,7 @@ class NewsletterControls {
         echo '</select>&nbsp;&nbsp;&nbsp;';
     }
 
-    function enabled($name) {
+    function enabled($name = 'enabled') {
         $value = isset($this->data[$name]) ? (int) $this->data[$name] : 0;
 
         echo '<select style="width: 100px" name="options[' . esc_attr($name) . ']">';
@@ -739,9 +746,9 @@ class NewsletterControls {
         $value = $this->get_value($name);
         echo '<input id="options-', esc_attr($name), '" placeholder="' . esc_attr($placeholder) . '" name="options[' . $name . ']" type="text" ';
         if (!empty($size)) {
-	        echo 'size="' . $size . '"';
+            echo 'size="' . $size . '" ';
         }
-        echo 'value="' , esc_attr($value), '">';
+        echo 'value="', esc_attr($value), '">';
     }
 
     function text_email($name, $size = 40) {
@@ -788,6 +795,14 @@ class NewsletterControls {
         echo esc_html(__('Reset', 'newsletter'));
         echo '</button>';
     }
+    
+    function button_link($url, $label) {
+        echo '<a href="', esc_attr($url), '" class="button-primary">', $label, '</a>';
+    }
+    
+    function button_configure($url) {
+        echo '<a href="', esc_attr($url), '" class="button-primary"><i class="fa fa-cog"></i>', _e('Configure', 'newsletter'), '</a>';
+    }    
 
     function button_back($url) {
         echo '<a href="';
@@ -913,7 +928,7 @@ class NewsletterControls {
         if ($label != '') {
             echo '<label>';
         }
-        echo '<input type="checkbox" id="' . esc_attr($name) . '" name="options[' . esc_attr($name) . ']" value="1"';
+        echo '<input type="checkbox" id="options-' . esc_attr($name) . '" name="options[' . esc_attr($name) . ']" value="1"';
         if (!empty($this->data[$name])) {
             echo ' checked';
         }
@@ -985,7 +1000,7 @@ class NewsletterControls {
 
         $value = $this->get_value($name);
         //echo '<input id="options-', esc_attr($name), '" class="tnp-controls-color" name="options[' . $name . ']" type="text" value="';
-	    echo '<input id="options-', esc_attr($name), '" name="options[' . $name . ']" type="color" value="';
+        echo '<input id="options-', esc_attr($name), '" name="options[' . $name . ']" type="color" value="';
         echo esc_attr($value);
         echo '">';
     }
@@ -1347,7 +1362,7 @@ class NewsletterControls {
      * @param array $attrs
      */
     function css_font($name = 'font', $attrs = array()) {
-        $default = array('color' => true, 'weight'=>true);
+        $default = array('color' => true, 'weight' => true);
         $attrs = array_merge($default, $attrs);
         $this->css_font_family($name . '_family');
         $this->css_font_size($name . '_size');
@@ -1376,10 +1391,10 @@ class NewsletterControls {
     function css_font_weight($name = 'font_weight') {
         $value = $this->get_value($name);
 
-        $fonts = array('normal'=>'Normal', 'bold'=>'Bold');
+        $fonts = array('normal' => 'Normal', 'bold' => 'Bold');
 
         echo '<select id="options-' . esc_attr($name) . '" name="options[' . esc_attr($name) . ']">';
-        foreach ($fonts as $key=>$font) {
+        foreach ($fonts as $key => $font) {
             echo '<option value="', esc_attr($key), '"';
             if ($value == $font) {
                 echo ' selected';
@@ -1483,7 +1498,7 @@ class NewsletterControls {
         echo $output;
     }
 
-    function language($name = 'language', $empty_label='All') {
+    function language($name = 'language', $empty_label = 'All') {
         if (!class_exists('SitePress') && !function_exists('pll_default_language') && !class_exists('TRP_Translate_Press')) {
             echo __('Install a multilanguage plugin.', 'newsletter');
             echo ' <a href="https://www.thenewsletterplugin.com/documentation/multilanguage" target="_blank">', __('Read more', 'newsletter'), '</a>';
@@ -1571,9 +1586,7 @@ class NewsletterControls {
     }
 
     static function field_help($url, $text = '') {
-        if (empty($text))
-            $text = __('Read more', 'newsletter');
-        echo '<i class="fa fa-question-circle"></i>&nbsp;<a href="', $url, '" target="_blank">', $text, '</a>';
+        echo '<a href="', $url, '" target="_blank" style="text-decoration: none" title="' . esc_attr(__('Read more', 'newsletter')) . '"><i class="fa fa-question-circle"></i>&nbsp;', $text, '</a>';
     }
 
     /**
@@ -1622,31 +1635,46 @@ class NewsletterControls {
         echo '</div>';
     }
 
-    function composer_fields($name='body') {
+    function composer_fields($name = 'body') {
 
-    	// body
+        // body
         $value = $this->get_value($name);
-		// Required since esc_html DOES NOT escape the HTML entities (apparently)
+
+        // Extracts only the body part
+        $x = strpos($value, '<body');
+        if ($x) {
+            $x = strpos($value, '>', $x);
+            $y = strpos($value, '</body>');
+            $value = substr($value, $x + 1, $y - $x - 1);
+        }
+
+        /* Cleans up uncorrectly stored newsletter bodies */
+        $value = preg_replace('/<style\s+.*?>.*?<\\/style>/is', '', $value);
+        $value = preg_replace('/<meta.*?>/', '', $value);
+        $value = preg_replace('/<title\s+.*?>.*?<\\/title>/i', '', $value);
+        $value = trim($value);
+
+        // Required since esc_html DOES NOT escape the HTML entities (apparently)
         $value = str_replace('&', '&amp;', $value);
         $value = str_replace('"', '&quot;', $value);
         $value = str_replace('<', '&lt;', $value);
         $value = str_replace('>', '&gt;', $value);
-        echo '<input type="hidden" name="options[', esc_attr($name), ']" id="options-', esc_attr($name), '" value="', $value, '">';
+        echo '<input type="hidden" name="options[', esc_attr($name), ']" id="options-', esc_attr($name), '" value="', esc_attr($value), '">';
 
+        // Used by composer to rebuild the full HTML
         $css = NewsletterEmails::instance()->get_composer_css();
-	    echo '<input type="hidden" name="options[css]" id="options-css" value="', esc_attr($css), '">';
+        echo '<input type="hidden" name="options[css]" id="options-css" value="', esc_attr($css), '">';
 
         // subject
         $value = $this->get_value('subject');
-        echo '<input type="hidden" name="options[subject]" id="options-subject" value="', $value, '">';
-
+        echo '<input type="hidden" name="options[subject]" id="options-subject" value="', esc_attr($value), '">';
     }
-    
-    function composer_load($name='body', $show_subject = false) {
 
-    	global $controls;
-    	global $tnpc_show_subject;
-    	$tnpc_show_subject = $show_subject;
+    function composer_load($name = 'body', $show_subject = false, $show_test = true) {
+
+        global $controls;
+        global $tnpc_show_subject;
+        $tnpc_show_subject = $show_subject;
 
         wp_enqueue_style('tnpc-style', plugins_url('newsletter') . '/emails/tnp-composer/_css/newsletter-builder.css', array(), time());
 

@@ -12,3 +12,6 @@
     -webkit-transition: 0.05s border-color ease-in-out;
     transition: 0.05s border-color ease-in-out;
 }
+.yith-plugin-ui .ui-slider-horizontal .ui-slider-handle{
+    padding: 0;
+}

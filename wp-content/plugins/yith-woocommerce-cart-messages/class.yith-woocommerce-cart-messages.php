@@ -206,13 +206,14 @@ if ( !class_exists( 'YWCM_Cart_Messages' ) ) {
             $args = array(
                 'create_menu_page' => true,
                 'parent_slug'      => '',
-                'page_title'       => __( 'Cart Messages', 'yith-woocommerce-cart-messages' ),
+                'page_title'       => __( 'YITH WooCommerce Cart Messages', 'yith-woocommerce-cart-messages' ),
                 'menu_title'       => __( 'Cart Messages', 'yith-woocommerce-cart-messages' ),
                 'capability'       => 'manage_options',
                 'parent'           => '',
                 'parent_page'      => 'yith_plugin_panel',
                 'page'             => $this->_panel_page,
                 'admin-tabs'       => $admin_tabs,
+                'class'            => yith_set_wrapper_class(),
                 'options-path'     => YITH_YWCM_DIR . 'plugin-options'
             );
 

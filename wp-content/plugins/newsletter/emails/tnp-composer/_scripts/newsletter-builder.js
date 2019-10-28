@@ -28,6 +28,7 @@ jQuery.fn.add_block_clone = function () {
 }
 
 let start_options = null;
+let container = null;
 
 jQuery.fn.perform_block_edit = function () {
 
@@ -47,7 +48,7 @@ jQuery.fn.perform_block_edit = function () {
         jQuery('.bgcolor').wpColorPicker().iris('color', target.css("background-color"));
 
         // The row container which is a global variable and used later after the options save
-        let container = jQuery(this).closest("table");
+        container = jQuery(this).closest("table");
 
         if (container.hasClass('tnpc-row-block')) {
 
@@ -287,11 +288,12 @@ function tnpc_save(form) {
     jQuery("#newsletter-preloaded-export .tnpc-row").removeClass("ui-draggable");
 
     let preload_export_html = jQuery("#newsletter-preloaded-export").html();
+    preload_export_html = jQuery.trim(preload_export_html);
 
-    let data = form.elements["options[css]"].value;
+    let css = jQuery.trim(form.elements["options[css]"].value);
 
-    let export_content = '<!DOCTYPE html>\n<html>\n<head>\n<title>Newsletter</title>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta http-equiv="X-UA-Compatible" content="IE=edge">\n';
-    export_content += '<style type="text/css">' + data + '</style>';
+    let export_content = '<!DOCTYPE html>\n<html>\n<head>\n<title>{subject}</title>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta http-equiv="X-UA-Compatible" content="IE=edge">\n';
+    export_content += '<style type="text/css">' + css + '</style>';
     export_content += '</head>\n<body style="margin: 0; padding: 0;">\n';
     export_content += preload_export_html;
     export_content += '\n</body>\n</html>';

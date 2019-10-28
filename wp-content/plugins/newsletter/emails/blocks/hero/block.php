@@ -9,7 +9,7 @@
 /* @var $wpdb wpdb */
 
 $defaults = array(
-    'url' => '',
+    'button_url' => '',
     'title' => 'An Awesome Title',
     'text' => 'This is just a simple text you should change',
     'font_family' => 'Helvetica, Arial, sans-serif',
@@ -38,7 +38,7 @@ if ($layout == 'full') {
 } else {
     $options = array_merge(array('block_padding_left'=>15, 'block_padding_right'=>15), $options);
 }
-$url = $options['url'];
+$url = $options['button_url'];
 
 $font_family = $options['font_family'];
 $font_size = $options['font_size'];
@@ -117,7 +117,7 @@ if (!empty($options['image']['id'])) {
         <tr>
             <td class="padding-copy tnpc-row-edit">
                 <a href="<?php echo $url ?>" target="_blank" rel="noopener nofollow">
-                    <img src="<?php echo $image ?>" border="0" alt="" inline-class="hero-image">
+                    <img src="<?php echo $image ?>" border="0" alt="Image" inline-class="hero-image">
                 </a>
             </td>
         </tr>

@@ -109,7 +109,7 @@ function tnp_media_resize($media_id, $size) {
     // Thumbnail generation if needed.
     if (!file_exists($absolute_thumb) || filemtime($absolute_thumb) < filemtime($absolute_file)) {
         $r = wp_mkdir_p($uploads['basedir'] . '/newsletter/thumbnails/' . $pathinfo['dirname']);
-
+        
         if (!$r) {
             $src = wp_get_attachment_image_src($media_id, $size);
             return $src[0];
@@ -121,6 +121,12 @@ function tnp_media_resize($media_id, $size) {
             return $src[0];
             //return $editor;
             //return $uploads['baseurl'] . '/' . $relative_file;
+        }
+        
+        $original_size = $editor->get_size();
+        if ($width > $original_size['width'] || $height > $original_size['height']) {
+            $src = wp_get_attachment_image_src($media_id, $size);
+            return $src[0];
         }
 
         $editor->set_quality(80);
@@ -139,8 +145,6 @@ function tnp_media_resize($media_id, $size) {
             //return $uploads['baseurl'] . '/' . $relative_file;
         }
     }
-
-
 
     return $uploads['baseurl'] . '/newsletter/thumbnails/' . $relative_thumb;
 }

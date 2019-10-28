@@ -14,7 +14,7 @@ global $WOOF;
 
             <section>
 
-                <a href="https://www.woocommerce-filter.com/extencion/quick-search/" target="_blank" class="button-primary"><?php echo __('About extension', 'woocommerce-products-filter') ?></a><br />
+                <a href="https://products-filter.com/extencion/quick-search/" target="_blank" class="button-primary"><?php echo __('About extension', 'woocommerce-products-filter') ?></a><br />
                 <br />
 
                 <div class="woof-control-section" style="display:none;"  >

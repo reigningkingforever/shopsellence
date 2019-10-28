@@ -280,7 +280,7 @@ if (!defined('ABSPATH'))
                             <p class="description">
                                 <?php _e('This data is very important for assembling statistics data, so please fill fields very responsibly. To collect statistical data uses a separate MySQL table.', 'woocommerce-products-filter') ?><br />
                                 <br />
-                                <a href="https://www.woocommerce-filter.com/extencion/statistic/" target="_blank" class="button"><?php _e('Read about the Statistic extension here', 'woocommerce-products-filter') ?></a>
+                                <a href="https://products-filter.com/extencion/statistic/" target="_blank" class="button"><?php _e('Read about the Statistic extension here', 'woocommerce-products-filter') ?></a>
                             </p>
                             
                             

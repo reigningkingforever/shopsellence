@@ -3,7 +3,7 @@
 Plugin Name: YellowPencil
 Plugin URI: https://yellowpencil.waspthemes.com
 Description: The most powerful visual CSS editor for WordPress. Customize any theme and page visually without coding.
-Version: 7.2.1
+Version: 7.2.6
 Author: WaspThemes
 Author URI: https://yellowpencil.waspthemes.com
 */
@@ -50,26 +50,6 @@ if ($pro_exists == true && $lite_exists == true) {
     
 }
 
-// Unlock all features
-function yp_define_pro(){
-
-    // Get purchase code from database
-    $purchase_code = get_option("yp_purchase_code");
-
-    // Has?
-    if($purchase_code){
-
-        if(!defined('WTFV')){
-
-            define('WTFV',TRUE);
-            
-        }
-
-    }
-
-}
-add_action("init","yp_define_pro");
-
 // Generate Base Editor URL.
 function yp_get_uri() {
 
@@ -95,13 +75,95 @@ define('WT_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WT_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 // Define
-define('YP_VERSION', "7.2.1");
+define('YP_VERSION', "7.2.6");
 
 // Admin Settings Page
 include(WT_PLUGIN_DIR . 'library/php/admin.php');
+include(WT_PLUGIN_DIR . 'library/php/subscription-cancellation.php');
 
-// Editor Right Panel
-include(WT_PLUGIN_DIR . 'library/php/panel.php');
+
+
+/* ---------------------------------------------------- */
+/* Register YellowPencil Panel                          */
+/* ---------------------------------------------------- */
+function yp_yellow_penci_bar() {
+
+    $yellow_pencil_uri = yp_get_uri();
+
+    // Get protocol
+    $protocol = is_ssl() ? 'https' : 'http';
+
+    // Href
+    $hrefA = $_GET['href'];
+
+    // Update protocol.
+    if(strstr($hrefA,'://') == true){
+        $hrefNew = explode("://",$hrefA);
+        $hrefNew = $protocol.'://'.$hrefNew[1];
+    }elseif(strstr($hrefA,'://') == false){
+        $hrefNew = $protocol.'://'.$hrefA;
+    }
+
+    // Page Link
+    $hrefNew = esc_url($hrefNew);
+
+    // YP Rand, Not must
+    $hrefNew = add_query_arg(array('yp_rand' => rand(136900, 963100)), $hrefNew);
+
+    // Creating LiveLink. Intval filter disabled on yp_page_id because yp using alpa for some page types.
+    $liveLink = add_query_arg(array('yp_live_preview' => 'true', 'yp_page_id' => $_GET['yp_page_id'], 'yp_page_type' => trim(wp_strip_all_tags($_GET['yp_page_type'])), 'yp_rand' => rand(136900, 963100)), $hrefNew);
+
+    // if isset out, set yp_out to live preview
+    if(isset($_GET['yp_out'])){
+        $liveLink = add_query_arg(array('yp_out' => 'true'), $liveLink);
+    }
+
+    $liveLink = str_replace("&#038;", "&amp;", $liveLink);
+    $liveLink = str_replace("&#38;", "&amp;", $liveLink);
+    
+    echo "<div class='editor-panel yp-disable-cancel'>
+        <div class='editor-panel-top'>
+            
+            <a href='".$hrefNew."' class='wf-close-btn-link' tabindex='-1'><span data-toggle='tooltip' data-placement='left' title='Close Editor' class='yp-close-btn'></span></a>
+
+            <a class='yp-button yp-save-btn yp-disabled'>Saved</a>
+
+            <a data-toggle='tooltipTopBottom' data-placement='bottom' title='Review Changes' class='yp-button-manage'></a>
+
+            <a target='_blank' data-href='".$liveLink."' data-toggle='tooltipTopBottom' data-placement='bottom' title='Live Preview' class='yp-button-live'></a>
+                
+            <div class='yp-clear'></div>
+
+        </div>";
+
+        echo "<div id='property-responsive-menu'></div>";
+
+        echo "<div class='editor-panel-inner'>";
+
+        echo "<div class='yp-customizing-section'>
+                <div class='yp-customizing-inner'>
+                ".yp_customizing_options()."
+                <div class='yp-clear'></div>
+                <div id='yp-current-element'>No element selected</div>
+                </div>
+        </div>";        
+        
+        // Options
+        include( WT_PLUGIN_DIR . 'options.php' );
+
+        echo "<div class='yp-panel-no-selection'><div class='starter-notice'><div class='yp-hand'></div><div class='yp-hand-after'></div>Select any element on the page to start making changes.</div></div>";
+
+        echo "<div class='editor-panel-footer'>
+            <h3><a tabindex='-1' target='_blank' href='https://yellowpencil.waspthemes.com/documentation/'>Documentation</a> / <a tabindex='-1' target='_blank' href='https://yellowpencil.waspthemes.com/changelog/'>V ".YP_VERSION."</a></h3>
+            <span class='dashicons dashicons-admin-collapse yp-panel-hide' data-toggle='tooltip' data-placement='left' title='Hide Panel <span class=\"yp-shortcut-char\">(H)</span>'></span>
+        </div>";
+
+        echo "</div>"; // Editor panel
+        
+    echo "</div>";
+    
+}
+
 
 // Check if it is demo mode
 function yp_check_demo_mode() {
@@ -176,7 +238,7 @@ function yp_unsplash_api(){
 
         // Error Check
         if ( is_wp_error( $tmp ) ) {
-            @unlink($file_array['tmp_name']);
+            wp_delete_file($file_array['tmp_name']);
             $file_array['tmp_name'] = '';
             die("This image file seems to be invalid.");
         }
@@ -186,7 +248,7 @@ function yp_unsplash_api(){
 
         // If error storing permanently, unlink
         if (is_wp_error($id)){
-            @unlink($file_array['tmp_name']);
+            wp_delete_file($file_array['tmp_name']);
             die("There is a problem with uploading the image to WordPress. please increase the file upload size limit and try again.");
         }
 
@@ -275,9 +337,12 @@ function yp_get_live_option($name){
 /* Saving selector comments                             */
 /* ---------------------------------------------------- */
 function yp_save_comments_option() {
+
+    // Get nonce
+    $nonce = $_REQUEST["_wpnonce"];
     
     // If User can edit theme options
-    if (current_user_can("edit_theme_options") == true && check_admin_referer("yp_editor_nonce")) {
+    if (current_user_can("edit_theme_options") == true && wp_verify_nonce($nonce, "yp_editor_nonce")) {
             
         // Get Value
         $value = wp_strip_all_tags($_POST['yp_selector_comments']);
@@ -287,6 +352,7 @@ function yp_save_comments_option() {
         
         // IS Valid
         json_decode($value);
+
         if(json_last_error() === JSON_ERROR_NONE){
         
             // Update Option with yp_op_ prefix
@@ -294,8 +360,20 @@ function yp_save_comments_option() {
                 add_option("yp_selector_comments", $value);
             }
 
+        }else{
+
+            wp_die("json_error");
+
         }
         
+    }else{
+
+        if(current_user_can("edit_theme_options") == true){
+            wp_die("nonce_error");
+        }else{
+            wp_die("authorized_error");
+        }
+
     }
     
     // Die
@@ -326,6 +404,44 @@ function yp_check_license() {
 add_action('wp_ajax_yp_check_license', 'yp_check_license');
 
 
+
+/* ---------------------------------------------------- */
+/* Delete Stylesheets                                   */
+/* ---------------------------------------------------- */
+function yp_delete_customization($type, $value) {
+    
+    if(current_user_can("edit_theme_options")){
+
+        // Specific single types
+        if($value == "lostpassword" || $value == "register" || $value == "login" || $value == "home"){
+            $type = "TYPE";
+        }
+
+        // delete global data.
+        if($type == "GLOBAL"){
+            delete_option('wt_css');
+            delete_option('wt_styles');
+        }
+
+        // delete Post type.
+        if($type == "TYPE"){
+            $reset_type = trim(wp_strip_all_tags($value));
+
+            delete_option('wt_'.$value.'_css');
+            delete_option('wt_'.$value.'_styles');
+        }
+
+        // delete by id.
+        if($type == "ID"){
+            delete_post_meta(intval($value),'_wt_css');
+            delete_post_meta(intval($value),'_wt_styles');
+        }
+
+    }
+
+}
+
+
 /* ---------------------------------------------------- */
 /* Delete Stylesheets, animations with ajax             */
 /* ---------------------------------------------------- */
@@ -341,13 +457,13 @@ function yp_delete_stylesheet_live() {
 
         // delete anim
         if(isset($_POST['yp_delete_animate'])){
-            delete_option(trim(strip_tags(($_POST['yp_delete_animate']))));
+            delete_option(trim(wp_strip_all_tags(($_POST['yp_delete_animate']))));
         }
 
         // delete Post type.
         if(isset($_POST['yp_reset_type'])){
 
-            $reset_type = trim( strip_tags( $_POST['yp_reset_type'] ) );
+            $reset_type = trim( wp_strip_all_tags( $_POST['yp_reset_type'] ) );
 
             delete_option('wt_'.$reset_type.'_css');
             delete_option('wt_'.$reset_type.'_styles');
@@ -429,31 +545,16 @@ function uninstall_yellow_pencil() {
 /* ---------------------------------------------------- */
 /* Add a customize link in wp plugins page              */
 /* ---------------------------------------------------- */
-function yp_customize_link($links, $file) {
-    
-    if ($file == plugin_basename(dirname(__FILE__) . '/yellow-pencil.php')) {
-
-        // Manage Customizations link
-        $in = '<a href="' . admin_url('themes.php?page=yellow-pencil-changes') . '">Manage Customizations</a>';
-        array_unshift($links, $in);
-
-        // Customize link
-        $in = '<a href="' . admin_url('themes.php?page=yellow-pencil') . '">Customize</a>';
-        array_unshift($links, $in);
-
-        // Show GO PRO link if lite version
-        if(!defined("WTFV")){
-            $in = '<a style="font-weight:700;" target="_blank" href="' . esc_url('https://waspthemes.com/yellow-pencil/buy/') . '">Go Pro</a>';
-            array_unshift($links, $in);
-        }
-
+function yp_plugin_action_links($links) {
+    $links[] = '<a href="' . admin_url('themes.php?page=yellow-pencil') . '">Customize</a>';
+    $links[] = '<a href="' . admin_url('themes.php?page=yellow-pencil-changes') . '">Manage Customizations</a>';
+    if(!defined("WTFV")){
+        $links[] = '<a href="' . admin_url('admin.php?page=yellow-pencil-license') . '">Go Pro</a>';
     }
-
     return $links;
-
 }
 
-add_filter('plugin_action_links', 'yp_customize_link', 10, 2);
+add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'yp_plugin_action_links' );
 
 
 
@@ -515,6 +616,47 @@ function yp_database_update(){
 }
 
 add_action("init", "yp_database_update");
+
+
+
+/* ---------------------------------------------------- */
+/* Update default custom css directory for 7.2.2        */
+/* ---------------------------------------------------- */
+function yp_new_custom_css_directory(){
+
+    $newCustom = get_option('yp_new_custom_CSS_dir');
+
+    // one time only.
+    if($newCustom === false){
+
+        // by this point, the $wp_filesystem global should be working, so let's use it to create a file
+        global $wp_filesystem;
+            
+        // Initialize the WP filesystem, no more using 'file-put-contents' function
+        if (empty($wp_filesystem)) {
+            require_once(ABSPATH . '/wp-admin/includes/file.php');
+            WP_Filesystem();
+        }
+
+        // Delete all old custom-x.css files in plugin directory because anymore creating in uploads folder.
+        $files = glob(WT_PLUGIN_DIR . 'custom-*.css');
+
+        // then delete old revisions before create new.
+        foreach($files as $file){
+            $wp_filesystem->delete($file);
+        }
+
+        // Update custom css
+        yp_update_custom_css_callback();
+
+        // Add a option to define the changed.
+        add_option("yp_new_custom_CSS_dir", "1");
+
+    }
+
+}
+
+add_action("init", "yp_new_custom_css_directory");
 
 
 
@@ -617,15 +759,25 @@ function yp_get_font_families($css, $type) {
     
     $protocol = is_ssl() ? 'https' : 'http';
     
-    preg_match_all('/font-family:(.*?);/', $css, $r);
+    preg_match_all('/\{(.*?)font-family:(.*?);(.*?)\}/', $css, $r);
     
-    foreach ($r['1'] as &$k) {
+    foreach ($r['2'] as &$k) {
         $k = yp_font_name($k);
     }
     
     $importArray = array();
     
-    foreach (array_unique($r['1']) as $family) {
+    $in = -1;
+    foreach (array_unique($r['2']) as $family) {
+
+        $in++;
+
+        // Skip if not include
+        if(!isset($_GET["yellow_pencil_frame"])){
+            if (strstr($r["0"][$in], "--google-webfont")){
+                continue;
+            }
+        }
         
         $id = str_replace("+", "-", strtolower($family));
         
@@ -809,6 +961,7 @@ function yp_deactivation_function($hook) {
 
     // clean options
     delete_option("yp_700_db_updateX");
+    delete_option("yp_purchase_code");
 
 }
 
@@ -826,7 +979,7 @@ function yp_enqueue_admin_pages($hook) {
     }
 
     // Yellow Pencil WordPress Admin Page. // loading ace editor
-    if ('toplevel_page_yellow-pencil-changes' == $hook || "yellowpencil_page_yellow-pencil-animations" == $hook || "yellowpencil_page_yellow-pencil-settings" == $hook) {
+    if ('toplevel_page_yellow-pencil-changes' == $hook || "yellowpencil_page_yellow-pencil-animations" == $hook || "yellowpencil_page_yellow-pencil-settings" == $hook || "yellowpencil_page_yellow-pencil-license" == $hook) {
 
         // Ace Editor
         wp_enqueue_script('yp-admin-page-ace', plugins_url('library/ace/ace.js', __FILE__), 'jquery', '1.0', TRUE);
@@ -884,7 +1037,11 @@ function yp_admin_headr() {
     $yellow_pencil_uri = yp_get_uri();
 
     // Basic
-    $frontpage_id = get_option('page_on_front');
+    if(get_option("show_on_front") == "page"){
+        $frontpage_id = get_option('page_on_front');
+    }else{
+        $frontpage_id = 0;
+    }
 
     if($frontpage_id == 0 || $frontpage_id == null){
         $page_id = "home";
@@ -928,7 +1085,7 @@ add_action('admin_init', 'yp_admin_headr');
 /* ---------------------------------------------------- */
 function yp_get_short_title($title, $limit) {
     
-    $title = strip_tags($title);
+    $title = wp_strip_all_tags($title);
     
     if ($title == '') {
         $title = 'Untitled';
@@ -968,11 +1125,11 @@ function yp_get_custom_animations() {
 
 // Update custom.css when reading settings change
 // Because this need to update body.blog etc prefixes after change.
-add_action( 'update_option_page_on_front', 'yp_check_settings', 10, 2 );
-add_action( 'update_option_page_for_posts', 'yp_check_settings', 10, 2 );
-add_action( 'update_option_show_on_front', 'yp_check_settings', 10, 2 );
+add_action( 'update_option_page_on_front', 'yp_update_custom_css_callback', 10, 2 );
+add_action( 'update_option_page_for_posts', 'yp_update_custom_css_callback', 10, 2 );
+add_action( 'update_option_show_on_front', 'yp_update_custom_css_callback', 10, 2 );
 
-function yp_check_settings(){
+function yp_update_custom_css_callback(){
 
     // Get All CSS data as ready-to-use
     $output = yp_get_export_css("create");
@@ -986,7 +1143,7 @@ function yp_check_settings(){
 /* ---------------------------------------------------- */
 /* Helper tool to print login styles                    */
 /* ---------------------------------------------------- */
-/* CSS codes, library.js, animate.css, custom-anims     */
+/* CSS codes, animation-events.js, animate.css, custom-anims */
 function yp_login_styles($r){
 
     $onlyCSS = "";
@@ -1013,6 +1170,9 @@ function yp_login_styles($r){
 
     // Delete CSS Comments
     $onlyCSS = preg_replace("!/\*[^*]*\*+([^/][^*]*\*+)*/!","", $onlyCSS);
+
+    // Delete HTML tags from pure CSS
+    $onlyCSS = wp_strip_all_tags($onlyCSS);
 
     // Return mode
     if($r){
@@ -1051,8 +1211,7 @@ function yp_login_styles($r){
     if (strstr($onlyCSS, "animation-name:") == true || strstr($onlyCSS, "animation-duration:") == true || strstr($onlyCSS, "animation-delay:") == true) {
             
         // Load library and jQuery
-        wp_enqueue_script('yellow-pencil-library', plugins_url('library/js/library.js', __FILE__), 'jquery', '1.0', TRUE);
-        wp_enqueue_script('jquery');
+        wp_enqueue_script('yellow-pencil-library', plugins_url('library/js/animation-events.js', __FILE__));
             
     }
 
@@ -1181,16 +1340,23 @@ function yp_get_css($r = false) {
     }
 
     // blog
-    $page_for_posts = get_option('page_for_posts');
+    if(get_option("show_on_front") == "page"){
+        $page_for_posts = get_option('page_for_posts');
+    }else{
+        $page_for_posts = 0;
+    }
     
     // Don't load type on front and posts page    
-    if(is_home() && $page_for_posts != null){
+    if(is_home() && $page_for_posts != 0){
         $get_post_meta   = get_post_meta($page_for_posts, '_wt_css', true);
         $onlyCSS .= $get_post_meta;
     }
 
     // Delete CSS Comments
     $onlyCSS = preg_replace("!/\*[^*]*\*+([^/][^*]*\*+)*/!","", $onlyCSS);
+
+    // Delete HTML tags from pure CSS
+    $onlyCSS = wp_strip_all_tags($onlyCSS);
     
     if ($onlyCSS != '' && $r == false) {
         
@@ -1307,7 +1473,13 @@ function yp_load_fonts_for_live() {
     yp_get_font_families($css, null);
 }
 
-
+/* ---------------------------------------------------- */
+/* Getting fonts for admin live                         */
+/* ---------------------------------------------------- */
+function yp_load_fonts_for_admin_live() {
+    $css = yp_get_live_css();
+    yp_get_font_families($css, null);
+}
 
 /* ---------------------------------------------------- */
 /* Getting fonts for admin                              */
@@ -1387,7 +1559,12 @@ function yp_auto_prefix($css) {
         "flex-shrink",
         "perspective",
         "transform-origin",
-        "backface-visibility"
+        "backface-visibility",
+        "animation-timing-function",
+        "transition-property",
+        "transition-duration",
+        "transition-timing-function",
+        "transition-delay",
     );
 
     // Ms prefixes
@@ -1410,7 +1587,7 @@ function yp_auto_prefix($css) {
     foreach ($webkit as $prefix) {
         
         if($prefix == "justify-content"){
-            $css = preg_replace('@(?<!-)' . $prefix . ':([^\{\;]+);@i', "-webkit-box-pack:$1;\r\t" . $prefix . ":$1;", $css);
+            $css = preg_replace('@(?<!-)' . $prefix . ':([^\{\;]+);@i', "-webkit-box-pack:$1;\r\t-webkit-justify-content:$1;\r\t" . $prefix . ":$1;", $css);
         }else if($prefix == "align-items"){
             $css = preg_replace('@(?<!-)' . $prefix . ':([^\{\;]+);@i', "-webkit-box-align:$1;\r\t" . $prefix . ":$1;", $css);
         }else if($prefix == "flex-grow"){
@@ -1734,8 +1911,13 @@ function yp_editor_styles($id, $type, $mode) {
     }
 
     // Not load page template to Blog Page and Front Page
-    $FrontPage = get_option('page_on_front');
-    $BlogPage = get_option('page_for_posts');
+    if(get_option("show_on_front") == "page"){
+        $FrontPage = get_option('page_on_front');
+        $BlogPage = get_option('page_for_posts');
+    }else{
+        $FrontPage = 0;
+        $BlogPage = 0;
+    }
 
     // get template data
     if (empty($get_type_option) == false) {
@@ -1837,8 +2019,10 @@ include_once(WT_PLUGIN_DIR . 'base.php');
 /*  Ajax Preview Save CallBack                           */
 /*-------------------------------------------------------*/
 function yp_preview_data_save() {
+
+    $nonce = $_REQUEST["_wpnonce"];
     
-    if (current_user_can("edit_theme_options") == true && check_admin_referer("yp_editor_nonce")) {
+    if (current_user_can("edit_theme_options") == true && wp_verify_nonce($nonce, "yp_editor_nonce")) {
         
         $css = wp_strip_all_tags($_POST['yp_data']);
         
@@ -1846,6 +2030,14 @@ function yp_preview_data_save() {
             add_option('yp_live_view_css_data', $css);
         }
         
+    }else{
+
+        if(current_user_can("edit_theme_options") == true){
+            wp_die("nonce_error");
+        }else{
+            wp_die("authorized_error");
+        }
+
     }
     
     wp_die();
@@ -1859,25 +2051,7 @@ add_action('wp_ajax_yp_preview_data_save', 'yp_preview_data_save');
 /*	Creating an Custom.css file (Static)				 */
 /*-------------------------------------------------------*/
 function yp_create_custom_css($data) {
-    
-    // Revisions
-    $rev = get_option('yp_revisions');
-    
-    if ($rev == false) {
-        $rev = 700;
-    }
-    
-    // Find all other old revisions
-    $files = glob(WT_PLUGIN_DIR . 'custom-*.css');
 
-    // then delete old revisions before create new.
-    foreach($files as $file){
-        wp_delete_file($file);
-    }
-    
-    // get the upload directory and make a test.txt file
-    $filename = WT_PLUGIN_DIR . 'custom-' . $rev . '.css';
-    
     // by this point, the $wp_filesystem global should be working, so let's use it to create a file
     global $wp_filesystem;
     
@@ -1886,6 +2060,32 @@ function yp_create_custom_css($data) {
         require_once(ABSPATH . '/wp-admin/includes/file.php');
         WP_Filesystem();
     }
+    
+    // Revisions
+    $rev = get_option('yp_revisions');
+    
+    if ($rev == false) {
+        $rev = 700;
+    }
+
+    // CSS Upload Directory
+    $uploads_dir = wp_upload_dir()["basedir"] . '/yellow-pencil/';
+
+    // Create folder if not available
+    if(!is_dir($uploads_dir)){
+        $wp_filesystem->mkdir($uploads_dir);
+    }
+
+    // Find all other old revisions
+    $files = glob($uploads_dir . 'custom-*.css');
+
+    // then delete old revisions before create new.
+    foreach($files as $file){
+        $wp_filesystem->delete($file);
+    }
+    
+    // get the upload directory and make a test.txt file
+    $filename = $uploads_dir . 'custom-' . $rev . '.css';
     
     if (!$wp_filesystem->put_contents($filename, $data, FS_CHMOD_FILE)) {
         echo 'Yellow Pencil: There was an error creating the custom.css file, please use "Dynamic Inline CSS" option.';
@@ -1898,8 +2098,10 @@ function yp_create_custom_css($data) {
 /*  Ajax Real Save Callback                              */
 /*-------------------------------------------------------*/
 function yp_ajax_save() {
-    
-    if (current_user_can("edit_theme_options") == true && check_admin_referer("yp_editor_nonce")) {
+        
+    $nonce = $_REQUEST['_wpnonce'];
+
+    if (current_user_can("edit_theme_options") == true && wp_verify_nonce($nonce, "yp_editor_nonce")) {
         
         // Revisions
         $currentRevision = get_option('yp_revisions');
@@ -1927,7 +2129,7 @@ function yp_ajax_save() {
         }
         
         if (isset($_POST['yp_page_type'])) {
-            $type = trim(strip_tags($_POST['yp_page_type']));
+            $type = trim(wp_strip_all_tags($_POST['yp_page_type']));
             if (count(explode("#", $type)) == 2) {
                 $type = explode("#", $type);
                 $type = $type[0];
@@ -1999,6 +2201,14 @@ function yp_ajax_save() {
             
         }
         
+    }else{
+
+        if(current_user_can("edit_theme_options") == true){
+            wp_die("nonce_error");
+        }else{
+            wp_die("authorized_error");
+        }
+
     }
     
     wp_die();
@@ -2006,201 +2216,6 @@ function yp_ajax_save() {
 }
 
 add_action('wp_ajax_yp_ajax_save', 'yp_ajax_save');
-
-
-/*-------------------------------------------------------*/
-/*  Ajax detect dynamic id and classes                   */
-/*-------------------------------------------------------*/
-function yp_ajax_detect_dynamic_id_class(){
-
-    if(check_admin_referer("yp_editor_nonce")){
-
-    // get protocol
-    $protocol = ( is_ssl() ? 'https://' : 'http://' );
-
-    // Espace the target URL
-    $url = $protocol.urldecode($_POST["yp_page_href"]);
-
-    // Random number to not load from cache
-    $rand = rand(136900, 963100);
-
-    // Update url with rand param
-    $url = add_query_arg(array('yp_rand' => $rand), $url);
-
-    // Get Response
-    $response = wp_remote_get($url, array( 'sslverify' => false));
-
-    // Get Content
-    $html = wp_remote_retrieve_body($response);
-
-    // Get response status
-    $status = wp_remote_retrieve_response_code($response);
-
-    // Return blank if no content
-    if($html == false || $status != 200 || $html == ""){
-        die();
-    }
-
-    // Current editor HTML
-    $currentHTML = stripslashes($_POST["yp_page_content"]);
-
-
-
-    // CURRENT EDITOR PAGE CONTENTS
-
-    // ID Array
-    $idArray = array();
-
-    // Get ids
-    preg_match_all("/id=(\"|\')(.*?)(\"|\')/", $currentHTML, $ids);
-
-    // check if have the value
-    if(isset($ids[2])){
-
-        $idCount = count($ids[2]);
-
-        // trim all id array
-        for ($i = 0; $i < $idCount; $i++) {
-            $ids[2][$i] = trim($ids[2][$i]);
-        }
-
-        // Add ids to idArray
-        array_push($idArray, $ids[2]);
-
-    }
-
-    // Get classes
-    preg_match_all("/class=(\"|\')(.*?)(\"|\')/", $currentHTML, $classes);
-
-    // Class Array
-    $classesArray = array();
-
-    // check if have the value
-    if(isset($classes[2])){
-
-        // Each all classes
-        foreach ($classes[2] as $thisClass){
-
-            // trim
-            $thisClass = trim($thisClass);
-            
-            // explode all one by one
-            if(strpos($thisClass, ' ') !== false){
-
-                // push each other one by one
-                $thisClass = explode(" ", $thisClass);
-
-                // each all classes
-                foreach ($thisClass as $currentClass){
-
-                    // trim
-                    $currentClass = trim($currentClass);
-                    
-                    // Push this class
-                    array_push($classesArray, $currentClass);
-
-                }
-
-            }else{
-
-                // Push this class
-                array_push($classesArray, $thisClass);
-
-            }
-
-        }
-
-    }
-
-
-
-    // REFLESHED PAGE CONTENTS
-
-    // Get ids
-    preg_match_all("/id=(\"|\')(.*?)(\"|\')/", $html, $ids);
-
-    // ID Array
-    $NewIdArray = array();
-
-    // check if have the value
-    if(isset($ids[2])){
-
-        $idCount = count($ids[2]);
-
-        // trim all id array
-        for ($i = 0; $i < $idCount; $i++) {
-            $ids[2][$i] = trim($ids[2][$i]);
-        }
-
-        // Add ids to output
-        array_push($NewIdArray, $ids[2]);
-
-    }
-
-    // Get classes
-    preg_match_all("/class=(\"|\')(.*?)(\"|\')/", $html, $classes);
-
-    // Class Array
-    $NewClassesArray = array();
-
-    // check if have the value
-    if(isset($classes[2])){
-
-        // Each all classes
-        foreach ($classes[2] as $thisClass){
-
-            // trim
-            $thisClass = trim($thisClass);
-            
-            // explode all one by one
-            if(strpos($thisClass, ' ') !== false){
-
-                // push each other one by one
-                $thisClass = explode(" ", $thisClass);
-
-                // each all classes
-                foreach ($thisClass as $currentClass){
-
-                    // trim
-                    $currentClass = trim($currentClass);
-                    
-                    // Push this class
-                    array_push($NewClassesArray, $currentClass);
-
-                }
-
-            }else{
-
-                // Push this class
-                array_push($NewClassesArray, $thisClass);
-
-            }
-
-        }
-
-    }
-
-    // Return Array
-    $outputArray = array();
-
-    // Push ID diff to return array
-    array_push($outputArray, array_diff($idArray[0],$NewIdArray[0]));
-
-    // Push class diff to return array
-    array_push($outputArray, array_diff($classesArray,$NewClassesArray));
-
-    // return the result
-    echo json_encode($outputArray);
-
-    // stop
-    die();
-
-    }
-
-}
-
-add_action('wp_ajax_yp_ajax_detect_dynamic_id_class', 'yp_ajax_detect_dynamic_id_class');
-add_action('wp_ajax_nopriv_yp_ajax_detect_dynamic_id_class', 'yp_ajax_detect_dynamic_id_class');
 
 
 /*-------------------------------------------------------*/
@@ -2232,7 +2247,7 @@ add_action('wp_ajax_yp_ajax_update_css', 'yp_ajax_update_css');
 function yp_customizing_type() {
 
     $type = $_GET['yp_mode'];
-    $typeSelf = strtolower(ucfirst(trim(strip_tags($_GET['yp_page_type']))));
+    $typeSelf = strtolower(ucfirst(trim(wp_strip_all_tags($_GET['yp_page_type']))));
 
     // Force Single
     if ($typeSelf == 'login' || $typeSelf == 'register' || $typeSelf == 'lostpassword') {
@@ -2277,8 +2292,8 @@ function yp_customizing_type() {
 function yp_type_is_available($gtype){
 
     // Get page type
-    $id = trim(strip_tags($_GET['yp_page_id']));
-    $type = trim(strip_tags($_GET['yp_page_type']));
+    $id = trim(wp_strip_all_tags($_GET['yp_page_id']));
+    $type = trim(wp_strip_all_tags($_GET['yp_page_type']));
 
     // Single is disabled on these types
     if($gtype == 'single'){
@@ -2301,8 +2316,13 @@ function yp_type_is_available($gtype){
         }
 
         // get post page id
-        $page_for_posts = get_option('page_for_posts');
-        $page_on_front = get_option('page_on_front');
+        if(get_option("show_on_front") == "page"){
+            $page_for_posts = get_option('page_for_posts');
+            $page_on_front = get_option('page_on_front');
+        }else{
+            $page_for_posts = 0;
+            $page_on_front = 0;
+        }
 
         // Template disabled on posts page
         if($id == $page_for_posts && $id != 0){
@@ -2358,19 +2378,55 @@ function yp_customizing_options(){
         $globalSelected = 'type-disabled';
     }
 
-    // Select Current
-    if($type == 'single' && $singleSelected != "type-disabled"){
-        $singleSelected = 'active-customizing-list';
-    }else if($type == 'template' && $templateSelected != "type-disabled"){
-        $templateSelected = 'active-customizing-list';
-    }else{
-        $globalSelected = 'active-customizing-list';
+    // getting post type
+    $page_type = $_GET['yp_page_type'];
+
+    // get slug label
+    if (post_type_exists($page_type)){
+        $page_type = get_post_type_object($page_type);
+        $page_type = $page_type->labels->singular_name;
     }
 
+    $page_type = '"'.ucfirst(strtolower($page_type)).'" template';
+
+    $defaultText = "";
+    $singleText = yp_page_name();
+    $templateText = $page_type;
+    $globalText = "Global";
+
+    // Select Current
+    if($type == 'single' && $singleSelected != "type-disabled"){
+
+        $singleSelected = 'active-customizing-list';
+        $defaultText = $singleText;
+
+    }else if($type == 'template' && $templateSelected != "type-disabled"){
+
+        $templateSelected = 'active-customizing-list';
+        $defaultText = $templateText;
+
+    }else{
+
+        $globalSelected = 'active-customizing-list';
+        $defaultText = $globalText;
+
+    }
+
+    
+
+    // start
+    $result = "<div id='customizing-mode' data-this-type='".$type."' class='yp-type-menu-link'><span class='type-heading'>".$defaultText."</span> <span class='dashicons dashicons-arrow-down'></span></div><div id='customizing-type-list'><ul>";
+
     // Options
-    $result = "<li data-value='single' class='".$singleSelected."'><i class='manage-this-type'></i><i class='reset-this-type'></i><h6><span>Single Customization</span><small class='type-bayt'><span>empty</span><i>changed</i></small></h6><span class='current-type'>current</span><p>apply style just to the current page.</p></li>";
-    $result .= '<li data-value="template" class="'.$templateSelected.'"><i class="manage-this-type"></i><i class="reset-this-type"></i><h6><span>Template Customization</span><small class="type-bayt"><span>empty</span><i>changed</i></small></h6><span class="current-type">current</span><p>apply style to all pages of the current post type.</p></li>';
-    $result .= '<li data-value="global" class="'.$globalSelected.'"><i class="manage-this-type"></i><i class="reset-this-type"></i><h6><span>Global Customization</span><small class="type-bayt"><span>empty</span><i>changed</i></small></h6><span class="current-type">current</span><p>apply style to the entire website.</p></li>';
+    $result .= "<li data-value='single' class='".$singleSelected."'><i class='manage-this-type'></i><i class='reset-this-type'></i><h6><span><span class='current-type'></span>".$singleText."</span><small class='type-byte'><span>empty</span><i>changed</i></small></h6><p>apply style just to the current page.</p></li>";
+    $result .= '<li data-value="template" class="'.$templateSelected.'"><i class="manage-this-type"></i><i class="reset-this-type"></i><h6><span><span class="current-type"></span>'.$templateText.'</span><small class="type-byte"><span>empty</span><i>changed</i></small></h6><p>apply style to all pages of the current post type.</p></li>';
+    $result .= '<li data-value="global" class="'.$globalSelected.'"><i class="manage-this-type"></i><i class="reset-this-type"></i><h6><span><span class="current-type"></span>'.$globalText.'</span><small class="type-byte"><span>empty</span><i>changed</i></small></h6><p>apply style to the entire website.</p></li>';
+
+    // switch to another page.
+    $result .= '<li id="yp-current-page"><h6>Customize another page</h6></li>';
+
+    // close
+    $result .= "</ul></div>";
 
     return $result;
 
@@ -2380,13 +2436,9 @@ function yp_customizing_options(){
 /* ---------------------------------------------------- */
 /* Getting current name                                 */
 /* ---------------------------------------------------- */
-function yp_page_name($full){
+function yp_page_name(){
 
     $limit = 24;
-
-    if($full){
-        $limit = 200;
-    }
 
     $result = "Unknown";
 
@@ -2397,23 +2449,23 @@ function yp_page_name($full){
         $id = $_GET['yp_page_id'];
 
         if($id == "lostpassword"){
-            return '"Lost Password Page"';
+            return 'Lost Password Page';
         }
 
         if($id == '404'){
-            return '"404 Error Page"';
+            return '404 Error Page';
         }
 
         if($id == 'home'){
-            return '"Homepage"';
+            return 'Homepage';
         }
 
         if($id == 'search'){
-            return '"Search Results"';
+            return 'Search Results';
         }
 
         if(!is_numeric($id)){
-            return '"'.ucfirst(strtolower($id)).' Page"';
+            return ''.ucfirst(strtolower($id)).' page';
         }
 
         // Only Int
@@ -2422,8 +2474,17 @@ function yp_page_name($full){
         $title = get_the_title($id);
         $slug  = get_post_type($id);
 
-        if (strlen($title) > $limit) {
-            $result = '"' . mb_substr($title, 0, $limit, 'UTF-8') . '..' . '" '.$slug;
+        // get slug label
+        if (post_type_exists($slug)){
+            $slug = get_post_type_object($slug);
+            $slug = $slug->labels->singular_name;
+        }
+
+        $slug = strtolower($slug);
+        $title = ucfirst(strtolower($title));
+
+        if (strlen($title) > ($limit-strlen($slug)) ) {
+            $result = '"' . mb_substr($title, 0, $limit, 'UTF-8') . '&hellip;" ' . $slug . '';
         } else {
 
             if ($title == '') {
@@ -2444,7 +2505,7 @@ function yp_page_name($full){
 /* Adding helper style for wp-admin-bar                 */
 /* ---------------------------------------------------- */
 function yp_yellow_pencil_style() {
-    echo '<style>#wp-admin-bar-yellow-pencil > .ab-item:before{content: "\f309";top:2px;}#wp-admin-bar-yp-update .ab-item:before{content: "\f316";top:3px;}</style>';
+    echo '<style>#wp-admin-bar-yp > .ab-item:before{content: "\f309";top:2px;}#wp-admin-bar-yp-update .ab-item:before{content: "\f316";top:3px;}</style>';
 }
 
 
@@ -2581,7 +2642,7 @@ function yp_yellow_pencil_edit_admin_bar($bar) {
 
     // Append Menu
     $args = array(
-        'id' => 'yellow-pencil',
+        'id' => 'yp',
         'title' => 'Edit With YellowPencil',
         'href' => add_query_arg(array(
         'href' => yp_urlencode($href),
@@ -2590,7 +2651,7 @@ function yp_yellow_pencil_edit_admin_bar($bar) {
         'yp_mode' => $edit_mode
     ),$yellow_pencil_uri),
         'meta' => array(
-            'class' => 'yellow-pencil'
+            'class' => 'yp'
     ));
 
     // Add to wp admin bar
@@ -2699,15 +2760,17 @@ function yp_init() {
     
     // Getting Current font families.
     add_action('wp_enqueue_scripts', 'yp_load_fonts');
-    
+    add_action('login_enqueue_scripts', 'yp_load_fonts_for_admin');
     
     // Live preview
     if (isset($_GET['yp_live_preview']) == true) {
         add_action('wp_enqueue_scripts', 'yp_load_fonts_for_live');
     }
 
-    // To Login
-    add_action('login_enqueue_scripts', 'yp_load_fonts_for_admin');
+    // Login preview
+    if(isset($_GET['yp_live_preview']) && $GLOBALS['pagenow'] === 'wp-login.php'){
+        add_action('login_enqueue_scripts', 'yp_load_fonts_for_admin_live');
+    }
 
 }
 
@@ -2755,6 +2818,15 @@ add_action('admin_head', 'yp_uploader_style');
 /* CSS library for YellowPencil			      			*/
 /* ---------------------------------------------------- */
 function yp_register_styles() {
+
+    // by this point, the $wp_filesystem global should be working, so let's use it to create a file
+    global $wp_filesystem;
+        
+    // Initialize the WP filesystem, no more using 'file-put-contents' function
+    if (empty($wp_filesystem)) {
+        require_once(ABSPATH . '/wp-admin/includes/file.php');
+        WP_Filesystem();
+    }
     
     // Animate library for live preview
     if (isset($_GET['yp_live_preview']) == true) {
@@ -2802,15 +2874,21 @@ function yp_register_styles() {
             if ($rev == false) {
                 $rev = 700;
             }
+
+            // Get uploads directory
+            $uploads_dir = wp_upload_dir()["basedir"] . '/yellow-pencil/';
+
+            // Get uploads URL
+            $uploads_url = wp_upload_dir()["baseurl"] . '/yellow-pencil/';
             
             // Custom CSS Href
-            $href = add_query_arg('revision', $rev, plugins_url('custom-' . $rev . '.css', __FILE__));
+            $href = add_query_arg('revision', $rev, $uploads_url . 'custom-' . $rev . '.css');
 
             // First check if file is exists
-            if(file_exists((WT_PLUGIN_DIR . 'custom-'.$rev.'.css'))){
+            if($wp_filesystem->exists($uploads_dir . 'custom-'.$rev.'.css')){
 
                 // Getting file size of custom css
-                $customCSSSize = @filesize(WT_PLUGIN_DIR . 'custom-'.$rev.'.css');
+                $customCSSSize = $wp_filesystem->size($uploads_dir . 'custom-'.$rev.'.css');
                 
                 // Add
                 if($customCSSSize > 0){
@@ -2858,15 +2936,13 @@ function yp_register_scripts() {
             if(isset($_GET["yp_live_preview"])){
 
                 // Loads
-                wp_enqueue_script('yellow-pencil-library', plugins_url('library/js/library.js', __FILE__), 'jquery', '1.0', TRUE);
-                wp_enqueue_script('jquery');
+                wp_enqueue_script('yellow-pencil-library', plugins_url('library/js/animation-events.js', __FILE__));
 
             // Website and If not draft mode
             }else if(get_option('yp-draft-mode') != '1'){
 
                 // Loads
-                wp_enqueue_script('yellow-pencil-library', plugins_url('library/js/library.js', __FILE__), 'jquery', '1.0', TRUE);
-                wp_enqueue_script('jquery');
+                wp_enqueue_script('yellow-pencil-library', plugins_url('library/js/animation-events.js', __FILE__));
 
             }
             
@@ -3142,6 +3218,25 @@ function yp_add_prefix_to_css_selectors($css, $prefix) {
 }
 
 
+/* --------------------------------------------------------- */
+/* Define Wtfv                                               */
+/* --------------------------------------------------------- */
+function yp_define_wtfv(){
+
+    // Get pcode
+    $purchase_code = get_option("yp_purchase_code");
+
+    // check
+    if($purchase_code){
+        if(!defined('WTFV')){
+            define('WTFV',TRUE);
+        }
+    }
+
+}
+
+add_action("init","yp_define_wtfv");
+
 
 /* --------------------------------------------------------- */
 /* Encoding & Decoding the data; Used for import and export  */
@@ -3216,15 +3311,15 @@ function yp_get_all_post_options($prefix = '', $en = false) {
 function yp_get_export_data() {
     
     $allData       = array();
-    $postmeta_CSS  = yp_get_all_post_options('_wt_css', true);
-    $postmeta_HTML = yp_get_all_post_options('_wt_styles', true);
-    $option_Data   = yp_get_all_options('wt_', true);
-    $option_Anims  = yp_get_all_options('yp_anim', true);
+    $postmeta_CSS  = yp_get_all_post_options('\_wt\_css', true);
+    $postmeta_HTML = yp_get_all_post_options('\_wt\_styles', true);
+    $option_Data   = yp_get_all_options('wt\_', true);
+    $option_Anims  = yp_get_all_options('yp\_anim', true);
 
     // @Ver 7.0.7
     $option_Output  = yp_get_all_options('yp-output-option', true); // output option
-    $option_Comments  = yp_get_all_options('yp_selector_comments', true); // selector comments
-    $option_Option  = yp_get_all_options('yp_op_', true); // Plugin options
+    $option_Comments  = yp_get_all_options('yp\_selector\_comments', true); // selector comments
+    $option_Option  = yp_get_all_options('yp\_op\_', true); // Plugin options
     
     if (is_array($postmeta_CSS)) {
         array_push($allData, $postmeta_CSS);
@@ -3278,9 +3373,9 @@ function yp_get_export_css($method) {
     $allData = array();
     
     // Getting all from database
-    $postmeta_CSS = yp_get_all_post_options('_wt_css', false);
-    $option_Data  = yp_get_all_options('wt_', false);
-    $option_Anims = yp_get_all_options('yp_anim', false);
+    $postmeta_CSS = yp_get_all_post_options('\_wt\_css', false);
+    $option_Data  = yp_get_all_options('wt\_', false);
+    $option_Anims = yp_get_all_options('yp\_anim', false);
     
     // Push option data to Array
     if (is_array($option_Data)) {
@@ -3355,7 +3450,12 @@ function yp_get_export_css($method) {
                 }
 
                 // blog
-                $page_for_posts = get_option('page_for_posts');
+                if(get_option("show_on_front") == "page"){
+                    $page_for_posts = get_option('page_for_posts');
+                }else{
+                    $page_for_posts = 0;
+                }
+                
 
                 // dont add default home style to static home page
                 if($key == "wt_home_css" && $page_for_posts != 0){

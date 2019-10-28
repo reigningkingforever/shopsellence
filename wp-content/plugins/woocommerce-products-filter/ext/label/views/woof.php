@@ -76,6 +76,7 @@ if (!function_exists('woof_draw_label_childs'))
                         }
                     }
 
+             
 
                     //excluding hidden terms
                     if (in_array($term['term_id'], $hidden_terms))
@@ -172,6 +173,7 @@ if (!function_exists('woof_draw_label_childs'))
                     continue;
                 }
             }
+
 
             //excluding hidden terms
             if (in_array($term['term_id'], $hidden_terms))

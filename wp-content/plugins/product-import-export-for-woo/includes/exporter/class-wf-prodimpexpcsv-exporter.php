@@ -128,7 +128,7 @@ class WF_ProdImpExpCsv_Exporter {
 				'post_status' 	=> array( 'publish', 'pending', 'private', 'draft' ),
 				'post_type'		=> array('product'),
 				'orderby' 		=> 'ID',
-                                'suppress_filters'      => false,
+                'suppress_filters'      => false,
 				'order'			=> 'ASC',
 				'offset'		=> $current_offset
 			) );

@@ -82,7 +82,7 @@ $_REQUEST['hide_terms_count_txt']=0;
                          $count = 0;
                          $show_count = get_option('woof_show_count', 0);
                          $show_count_dynamic = get_option('woof_show_count_dynamic', 0);
-                         $hide_dynamic_empty_pos = get_option('woof_hide_dynamic_empty_pos', 0);
+                         $hide_dynamic_empty_pos = 0;
 
                          if (!in_array($key+1,$woof_value))
                          {
@@ -112,7 +112,7 @@ $_REQUEST['hide_terms_count_txt']=0;
                              }
                          }
 
-                 
+                    
                          ?>
                          <option <?php if ($show_count AND $count == 0 AND !in_array($key+1,$woof_value)): ?>disabled=""<?php endif; ?> value="<?php echo $key+1 ?>" <?php echo selected(in_array($key+1,$woof_value)) ?>>
                              <?php

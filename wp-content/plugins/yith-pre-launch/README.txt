@@ -3,8 +3,8 @@
 Contributors: yithemes
 Tags: prelaunch, maintenance, construction, themes, yit
 Requires at least: 3.5.1
-Tested up to: 4.9.4
-Stable tag: 1.3.0
+Tested up to: 5.2
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,6 +54,10 @@ Recently this plugin has been selected to be included in the "translate.wordpres
 2. The general settings
 
 == Changelog ==
+
+= 1.3.1 - Released: 17 July, 2019 =
+
+* New: Tested up to WordPress 5.2
 
 = 1.3.0 - Released: 30 March, 2018 =
 

@@ -16,13 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /* ---------------------------------------------------- */
 /* Slider Option                                        */
 /* ---------------------------------------------------- */
-function yp_get_slider_markup($cssName, $name, $default = 'inherit', $decimals, $pxv, $pcv, $emv, $note = null, $dataFormats){
-	
-	// Tooltip
-	$tooltip = '';
-	if($note != null && $note != false){
-		$tooltip = " data-toggle='tooltip' data-placement='left' title='".$note."'";
-	}
+function yp_get_slider_markup($cssName, $name, $default = 'inherit', $decimals, $pxv, $pcv, $emv, $title = null, $dataFormats = null){
     
     // Default
     if ($default === false || $default == '') {
@@ -42,8 +36,22 @@ function yp_get_slider_markup($cssName, $name, $default = 'inherit', $decimals, 
         }
     }
     
+    // px, em etc.
+    if($dataFormats != null){
+        $dataFormats = "data-support-formats='".$dataFormats."'";
+    }else{
+        $dataFormats = "";
+    }
+
+    // default
+    if($default != "no-defined"){
+        $default = " data-default='".$default."'";
+    }else{
+        $default = "";
+    }
+
     // Option HTML
-    return "<div id='" . $cssName . "-group' class='yp-option-group yp-slider-option' data-support-formats='".$dataFormats."' data-css-default='".$default."' data-css='" . $cssName . "' data-css-id='" . yp_css_id($cssName) . "' data-decimals='" . $decimals . "' data-px-range='" . $pxv . "' data-pc-range='" . $pcv . "' data-em-range='" . $emv . "'><div class='yp-part'><label class='yp-option-label'>".$proLabel."<span".$tooltip.">" . $name . "</span><i class='phone-icon'></i><a class='yp-btn-action yp-disable-btn'></a></label><div id='yp-" . $cssName . "' class='yp-slider-div'></div><div class='yp-after'><input type='text' id='" . $cssName . "-value' class='yp-after-css yp-after-css-val' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' /><input type='text' id='" . $cssName . "-after' class='yp-after-css yp-after-prefix' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' /></div></div><div class='clearfix'></div><div class='prefix-select'></div></div>";
+    return "<div id='" . $cssName . "-group' class='yp-option-group yp-slider-option'".$dataFormats."".$default." data-css='" . $cssName . "' data-decimals='" . $decimals . "' data-px='" . $pxv . "' data-pc='" . $pcv . "' data-em='" . $emv . "'><div class='yp-option-container'><span class='yp-option-label'>".$proLabel."<span class='yp-disable-btn' title='".$title."'>" . $name . "</span><i class='mobile-icon'></i></span><div id='yp-" . $cssName . "' class='yp-slider-div'><div class='yp-slider-current'></div></div><div class='yp-after'><input type='text' id='" . $cssName . "-value' class='yp-css-value' autocomplete='off' spellcheck='false' /><input type='text' id='" . $cssName . "-after' class='yp-css-format' autocomplete='off' spellcheck='false' /></div></div><div class='prefix-select'></div></div>";
 
 }
 
@@ -51,13 +59,7 @@ function yp_get_slider_markup($cssName, $name, $default = 'inherit', $decimals, 
 /* ---------------------------------------------------- */
 /* Grid Builder                                         */
 /* ---------------------------------------------------- */
-function yp_grid_builder($cssName, $name, $note = null){
-
-    // Tooltip
-    $tooltip = '';
-    if($note != null && $note != false){
-        $tooltip = " data-toggle='tooltip' data-placement='left' title='".$note."'";
-    }
+function yp_grid_builder($cssName, $name, $title = null){
 
     // Dev CSS Filter
     $CSSID = yp_css_id($cssName);
@@ -65,11 +67,11 @@ function yp_grid_builder($cssName, $name, $note = null){
     if(!$option_status){return;}
 
     // Option HTML
-    $return = "<div id='" . $cssName . "-group' class='yp-option-group yp-grid-option' data-css='" . $cssName . "' data-css-id='" . yp_css_id($cssName) . "'><div class='yp-part'><label class='yp-option-label'><span".$tooltip.">" . $name . "</span><i class='phone-icon'></i><a class='yp-btn-action yp-disable-btn'></a></label>";
+    $return = "<div id='" . $cssName . "-group' class='yp-option-group yp-grid-option' data-css='" . $cssName . "'><div class='yp-option-container'><span class='yp-option-label'><span class='yp-disable-btn' title='".$title."'>" . $name . "</span><i class='mobile-icon'></i></span>";
     
     
     // End Option
-    $return .= "<input id='yp-" . $cssName . "' class='grid-builder-input' type='text' value='' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' /><div class='grid-builder-area'></div></div></div>";
+    $return .= "<input id='yp-" . $cssName . "' class='grid-builder-input' type='text' value='' autocomplete='off' spellcheck='false' /><div class='grid-builder-area'></div></div></div>";
     
     // Return    
     return $return;
@@ -80,20 +82,10 @@ function yp_grid_builder($cssName, $name, $note = null){
 /* ---------------------------------------------------- */
 /* Select Option                                        */
 /* ---------------------------------------------------- */
-function yp_get_select_markup($cssName, $name, $values, $default = 'none', $note = null){
+function yp_get_select_markup($cssName, $name, $values, $default = 'none', $title = null){
 	
-	// Tooltip
-	$tooltip = '';
-	if($note != null && $note != false){
-		$tooltip = " data-toggle='tooltip' data-placement='left' title='".$note."'";
-	}
-    
     // Default 1
-    if ($default != false) {
-        $defaultLink = "<a class='yp-btn-action yp-none-btn' data-default='".$default."'>" . $default . "</a>";
-    } else {
-        $defaultLink = '';
-    }
+    $defaultLink = '';
 
     // Default 2
     if ($cssName == 'animation-name') {
@@ -125,7 +117,14 @@ function yp_get_select_markup($cssName, $name, $values, $default = 'none', $note
 	    		$rArray .= ",";
 	    	}
 
-	        $rArray .= '{"value":"'.$key.'","label":"'.$value.'"}';
+            $thisCat = "";
+
+            if(is_array($value)){
+                $thisCat = $value['1'];
+                $value = $value['0'];
+            }
+
+	        $rArray .= '{"value":"'.$key.'","label":"'.$value.'", "category":"'.$thisCat.'"}';
 
 	        $i++;
 
@@ -145,13 +144,18 @@ function yp_get_select_markup($cssName, $name, $values, $default = 'none', $note
         }
     }
 
+    // checkbox
+    $fontFamilyCheckbox = "";
+    if($cssName == "font-family"){
+        $fontFamilyCheckbox = '<label id="include-webfont-label"><input type="checkbox" checked="checked"><span class="include-webfont-input"></span></label>';
+    }
+
     // Option HTML
-    $return = "<div id='" . $cssName . "-group' class='yp-option-group yp-select-option' data-css='" . $cssName . "' data-css-id='" . yp_css_id($cssName) . "'><div class='yp-part'><label class='yp-option-label'>".$proLabel."<span".$tooltip.">" . $name . "</span><i class='phone-icon'></i> " . $defaultLink . " <a class='yp-btn-action yp-disable-btn'></a></label><textarea tabindex='-1' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' disabled='disabled'>".$values."</textarea>";
-    
+    $return = "<div id='" . $cssName . "-group' class='yp-option-group yp-select-option' data-css='" . $cssName . "'><div class='yp-option-container'><span class='yp-option-label'>".$proLabel."<span class='yp-disable-btn' title='".$title."'>" . $name . "</span><i class='mobile-icon'></i>" . $defaultLink . $fontFamilyCheckbox . "</span><textarea tabindex='-1' autocomplete='off' spellcheck='false' disabled='disabled'>".$values."</textarea>";
     
     // End Option
-    $return .= "<input id='yp-" . $cssName . "' type='text' class='input-autocomplete' value='' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' /><div id='yp-autocomplete-place-" . $cssName . "' class='autocomplete-div'></div></div></div>";
-	
+    $return .= "<div class='autocomplete-parent-div'><input id='yp-" . $cssName . "' type='text' class='input-autocomplete' value='' autocomplete='off' spellcheck='false' /><div id='yp-autocomplete-place-" . $cssName . "' class='autocomplete-div'></div></div></div></div>";
+
 	// Return    
     return $return;
 
@@ -162,20 +166,10 @@ function yp_get_select_markup($cssName, $name, $values, $default = 'none', $note
 /* ---------------------------------------------------- */
 /* Radio Option                                         */
 /* ---------------------------------------------------- */
-function yp_get_radio_markup($cssName, $name, $values, $default = 'none',$note = null){
+function yp_get_radio_markup($cssName, $name, $values, $default = 'none',$title = null){
 	
-	// Tooltip
-	$tooltip = '';
-	if($note != null && $note != false){
-		$tooltip = " data-toggle='tooltip' data-placement='left' title='".$note."'";
-	}
-    
     // Default
-    if ($default != false) {
-        $defaultLink = "<a class='yp-btn-action yp-none-btn' data-default='".$default."'>" . $default . "</a>";
-    } else {
-        $defaultLink = '';
-    }
+    $defaultLink = '';
 
     // Dev CSS Filter
     $CSSID = yp_css_id($cssName);
@@ -191,15 +185,21 @@ function yp_get_radio_markup($cssName, $name, $values, $default = 'none',$note =
     }
     
     // Option HTML
-    $return = "<div id='" . $cssName . "-group' class='yp-option-group yp-radio-option' data-css='" . $cssName . "' data-css-id='" . yp_css_id($cssName) . "'><div class='yp-part'><label class='yp-option-label'>".$proLabel."<span".$tooltip.">" . $name . "</span><i class='phone-icon'></i> " . $defaultLink . " <a class='yp-btn-action yp-disable-btn'></a></label><div class='yp-radio-grid-" . count($values) . " yp-radio-content' id='yp-" . $cssName . "'>";
+    $return = "<div id='" . $cssName . "-group' class='yp-option-group yp-radio-option' data-css='" . $cssName . "'><div class='yp-option-container'><span class='yp-option-label'>".$proLabel."<span class='yp-disable-btn' title='".$title."'>" . $name . "</span><i class='mobile-icon'></i> " . $defaultLink . " </span><div class='yp-radio-grid-" . count($values) . " yp-radio-content' id='yp-" . $cssName . "'>";
     
     // Radio Settings
     foreach ($values as $key => $value) {
-        $return .= '<div class="yp-radio"><input type="radio" name="' . $cssName . '" value="' . $key . '" id="s-'.$cssName.'-' . $key . '"><label id="'.$cssName.'-' . $key . '" data-for="s-'.$cssName.'-' . $key . '" class="yp-update">' . $value . '</label></div>';
+        $return .= '<div class="yp-radio"><input type="radio" name="' . $cssName . '" value="' . $key . '"><label id="'.$cssName.'-' . $key . '">' . $value . '</label></div>';
     }
     
     // Close
-    $return .= "<div class='yp-clear'></div></div></div></div>";
+    $return .= "</div></div>";
+
+    if($cssName == "background-size"){
+        $return .= "<div class='background-size-custom-group yp-after'><div class='background-size-x-group'><input type='text' id='" . $cssName . "-x-value' class='yp-bgs-css-val' autocomplete='off' spellcheck='false' /><input type='text' id='" . $cssName . "-x-custom' class='yp-bgs-prefix' autocomplete='off' spellcheck='false' /><span class='property-title'>Width</span><div class='prefix-select'></div></div><div class='background-size-y-group'><input type='text' id='" . $cssName . "-y-value' class='yp-bgs-css-val' autocomplete='off' spellcheck='false' /><input type='text' id='" . $cssName . "-y-custom' class='yp-bgs-prefix' autocomplete='off' spellcheck='false' /><span class='property-title'>Height</span><div class='prefix-select'></div></div></div>";
+    }
+
+    $return .= "</div>";
     
     // Return
     return $return;
@@ -211,13 +211,7 @@ function yp_get_radio_markup($cssName, $name, $values, $default = 'none',$note =
 /* ---------------------------------------------------- */
 /* Colorpicker Option                                    */
 /* ---------------------------------------------------- */
-function yp_get_color_markup($cssName, $name,$note = null){
-	
-	// Tooltip
-	$tooltip = '';
-	if($note != null && $note != false){
-		$tooltip = " data-toggle='tooltip' data-placement='left' title='".$note."'";
-	}
+function yp_get_color_markup($cssName, $name,$title = null){
 
 	// Dev CSS Filter
     $CSSID = yp_css_id($cssName);
@@ -233,22 +227,7 @@ function yp_get_color_markup($cssName, $name,$note = null){
     }
     
     // Option HTML
-    $return = "<div id='" . $cssName . "-group' class='yp-option-group yp-color-option' data-css='" . $cssName . "' data-css-id='" . yp_css_id($cssName) . "'><div class='yp-part'><label class='yp-option-label'>".$proLabel."<span".$tooltip.">" . $name . "</span><i class='phone-icon'></i> <a class='yp-btn-action yp-none-btn'>transparent</a> <a class='yp-btn-action yp-disable-btn'></a></label><div class='yp-color-input-box'><input id='yp-" . $cssName . "' type='text' maxlength='22' size='22' class='wqcolorpicker' value='' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' /><span class='yp-color-background'><span class='wqminicolors-swatch-color'></span></span><span class='color-picker-icon yp-element-picker'></span></div><div class='yp-after'><a class='yp-flat-colors'>Flat</a><a class='yp-meterial-colors'>Material</a><a class='yp-nice-colors'>Trend</a><a class='yp-theme-colors'>Page Colors</a><div class='yp-clear'></div>";
-
-        // Theme Colors
-        $return .= "<div class='yp_theme_colors_area'></div>";
-
-    	// Flat Colors
-        $return .= "<div class='yp_flat_colors_area'></div>";
-		
-		// Meterial Colors	
-		$return .= "<div class='yp_meterial_colors_area'></div>";
-		
-		// Nice Colors		
-		$return .= "<div class='yp_nice_colors_area'></div>";
-
-		// option End
-		$return .= "</div></div></div>";
+    $return = "<div id='" . $cssName . "-group' class='yp-option-group yp-color-option' data-css='" . $cssName . "'><div class='yp-option-container'><span class='yp-option-label'>".$proLabel."<span class='yp-disable-btn' title='".$title."'>" . $name . "</span><i class='mobile-icon'></i> </span><div class='yp-color-input-box'><input id='yp-" . $cssName . "' type='text' maxlength='22' size='22' class='wqcolorpicker' value='' autocomplete='off' spellcheck='false' /><span class='yp-color-background'><span class='wqminicolors-swatch-color'></span></span></div></div></div>";
     
     // Return
     return $return;
@@ -261,14 +240,8 @@ function yp_get_color_markup($cssName, $name,$note = null){
 /* ---------------------------------------------------- */
 /* Input Option   		                                */
 /* ---------------------------------------------------- */
-function yp_get_input_markup($cssName, $name, $none = null, $note = null){
+function yp_get_input_markup($cssName, $name, $title = null){
 	
-	// Tooltip
-	$tooltip = '';
-	if($note != null && $note != false){
-		$tooltip = " data-toggle='tooltip' data-placement='left' title='".$note."'";
-	}
-
 	// Dev CSS Filter
     $CSSID = yp_css_id($cssName);
     $option_status = apply_filters( 'yp_property__'.$CSSID, TRUE);
@@ -283,11 +256,12 @@ function yp_get_input_markup($cssName, $name, $none = null, $note = null){
     }
     
     // Option HTML
-    $return = "<div id='" . $cssName . "-group' class='yp-option-group yp-input-option' data-css='" . $cssName . "' data-css-id='" . yp_css_id($cssName) . "'><div class='yp-part'><label class='yp-option-label'>".$proLabel."<span".$tooltip.">" . $name . "</span><i class='phone-icon'></i> <a class='yp-btn-action yp-none-btn' data-default='".$none."'>".$none."</a> <a class='yp-btn-action yp-disable-btn'></a></label><div class='yp-input-wrapper'><input autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' id='yp-" . $cssName . "' type='text' class='yp-input' value='' />";
+    $return = "<div id='" . $cssName . "-group' class='yp-option-group yp-input-option' data-css='" . $cssName . "'><div class='yp-option-container'><span class='yp-option-label'>".$proLabel."<span class='yp-disable-btn' title='".$title."'>" . $name . "</span><i class='mobile-icon'></i> </span><div class='yp-input-wrapper'><input placeholder='none' autocomplete='off' spellcheck='false' id='yp-" . $cssName . "' type='text' class='yp-input' value='' />";
 
     // Upload image icon
     if($cssName == 'list-style-image' || $cssName == "background-image"){
-    	$return .= "<span class='yp-upload-btn yp-gallery-btn'></span>";
+        $return .= "<span class='yp-upload-btn yp-gallery-btn'></span>";
+        $return .= "<span class='yp-clear-btn dashicons dashicons-no-alt'></span>";
     }
 
     $return .= "</div>";
@@ -306,11 +280,11 @@ function yp_get_input_markup($cssName, $name, $none = null, $note = null){
 		// Background patterns section end.
 
 		// Background gradient section starts
-		$return .= '<div class="yp-gradient-section"><div class="yp-gradient-list"></div><div class="uigradient-api">by <a href="https://uigradients.com">uiGradients</a></div><div class="yp-gradient-bar-background"><div class="yp-gradient-bar"></div></div><div class="yp-gradient-pointer-area"></div><input id="iris-gradient-color" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /><div class="yp-gradient-space"></div><div class="yp-gradient-orientation" data-degree="90"><b>Orientation</b><i></i></div></div>';
+		$return .= '<div class="yp-gradient-section"><div class="gradient-editor"><div class="yp-gradient-bar-background"><div class="yp-gradient-bar"></div></div><div class="yp-gradient-pointer-area"></div><input id="iris-gradient-color" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /><div class="yp-gradient-space"></div><div class="yp-gradient-orientation" data-degree="90"><b>Orientation</b><i></i></div></div><div class="yp-gradient-list"></div><div class="uigradient-api">by <a href="https://uigradients.com">uiGradients</a></div></div>';
 		// Background gradient section end
 
         $return .= "<div class='yp-unsplash-section'>";
-		$return .= "<div class='yp-unsplash-inner'><input id='unsplash-search' type='text' value='' placeholder='Search an image' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' />";
+		$return .= "<div class='yp-unsplash-inner'><input id='unsplash-search' type='text' value='' placeholder='Search an image' autocomplete='off' spellcheck='false' />";
 		$return .= "<div class='yp-unsplash-list'></div></div>";
 		$return .= '<div class="unsplash-api">by <a href="https://unsplash.com">Unsplash</a></div>';
 		$return .= "</div>";
@@ -318,41 +292,6 @@ function yp_get_input_markup($cssName, $name, $none = null, $note = null){
 	}
 
 	// Close
-    $return .= "</div></div>";
-    
-    // Return
-    return $return;
-    
-}
-
-
-
-/* ---------------------------------------------------- */
-/* Input Option   		                                */
-/* ---------------------------------------------------- */
-function yp_get_textarea_markup($cssName, $name, $none = null, $note = null){
-	
-	// Tooltip
-	$tooltip = '';
-	if($note != null && $note != false){
-		$tooltip = " data-toggle='tooltip' data-placement='left' title='".$note."'";
-	}
-
-	// Dev CSS Filter
-    $CSSID = yp_css_id($cssName);
-    $option_status = apply_filters( 'yp_property__'.$CSSID, TRUE);
-    if(!$option_status){return;}
-
-    // Pro Label
-    $proLabel = "";
-    if(!defined("WTFV")){
-        if($cssName == "font-family" || $cssName == "color" || $cssName == "background-color" || $cssName == "background-image" || $cssName == "width" || $cssName == "height" || $cssName == "animation-name"){
-            $proLabel = "<a target='_blank' href='https://waspthemes.com/yellow-pencil/buy' class='yp-lite yp-pro-label'>GO PRO</a>";
-        }
-    }
-    
-    // Option HTML
-    $return = "<div id='" . $cssName . "-group' class='yp-option-group yp-input-option' data-css='" . $cssName . "' data-css-id='" . yp_css_id($cssName) . "'><div class='yp-part'><label class='yp-option-label'>".$proLabel."<span".$tooltip.">" . $name . "</span><i class='phone-icon'></i> <a class='yp-btn-action yp-none-btn' data-default='".$none."'>".$none."</a> <a class='yp-btn-action yp-disable-btn'></a></label><textarea autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' id='yp-" . $cssName . "' type='text' class='yp-textarea'></textarea>";
     $return .= "</div></div>";
     
     // Return

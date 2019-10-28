@@ -47,6 +47,16 @@ Images
 
 
 == Changelog ==
+= 2.4.0 =
+** Added New Welcome page and removed old
+** Added Demo Importer
+** Fixed bugs and design issues
+
+= 2.3.9 =
+** Fixed Wishlist issues.
+** Fixed Dynamic color issues.
+** Minor Css issue fixed.
+
 = 2.3.8 =
 ** Fixed Promo widget media uploader issue.
 ** Fixed Dynamic color option related issue on header one.

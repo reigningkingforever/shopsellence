@@ -66,9 +66,28 @@ if ( ! class_exists( 'YWCM_Cart_Message' ) ) {
             add_action( 'manage_' . $this->post_type_name . '_posts_custom_column', array( $this, 'custom_columns' ), 10, 2 );
             //register metabox to cart_messages
             add_action( 'admin_init', array( $this, 'add_metabox' ), 1 );
+	        add_filter( 'yith_plugin_fw_metabox_class', array( $this, 'add_custom_metabox_class'), 10, 2 );
+
 
         }
 
+		/**
+		 * Add new plugin-fw style.
+		 *
+		 * @param $class
+		 * @param $post
+		 *
+		 * @return string
+		 */
+		public function add_custom_metabox_class( $class, $post ){
+
+			$allow_post_types = array( $this->post_type_name );
+
+			if( in_array( $post->post_type, $allow_post_types ) ){
+				$class.= ' '.yith_set_wrapper_class();
+			}
+			return $class;
+		}
 
         // Register Custom Post Type
         function message_post_type() {

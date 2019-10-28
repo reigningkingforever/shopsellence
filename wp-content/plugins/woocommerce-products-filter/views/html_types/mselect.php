@@ -4,9 +4,10 @@ global $WOOF;
 $collector = array();
 $_REQUEST['additional_taxes'] = $additional_taxes;
 $_REQUEST['hide_terms_count_txt'] = 0;
+//***
 
 //***
-$woof_hide_dynamic_empty_pos = get_option('woof_hide_dynamic_empty_pos');
+$woof_hide_dynamic_empty_pos = 0;
 if (!function_exists('woof_draw_mselect_childs'))
 {
 
@@ -23,7 +24,7 @@ if (!function_exists('woof_draw_mselect_childs'))
 
         global $WOOF;
         $request = $WOOF->get_request_data();
-        $woof_hide_dynamic_empty_pos = get_option('woof_hide_dynamic_empty_pos');
+        $woof_hide_dynamic_empty_pos = 0;
 
         $current_request = array();
         if ($WOOF->is_isset_in_request_data($tax_slug))
@@ -71,6 +72,7 @@ if (!function_exists('woof_draw_mselect_childs'))
                         continue;
                     }
                 }
+
 
                 //excluding hidden terms
                 if (in_array($term['term_id'], $hidden_terms))
@@ -155,7 +157,6 @@ if (!function_exists('woof_draw_mselect_childs'))
                     continue;
                 }
             }
-
 
             if (in_array($term['term_id'], $hidden_terms))
             {

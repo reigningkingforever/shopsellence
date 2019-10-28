@@ -55,7 +55,7 @@ if (!defined('ABSPATH'))
     <input type="hidden" name="woof_settings[<?php echo $key ?>][label]" value="<?php echo $woof_settings[$key]['label'] ?>" />
     <input type="hidden" name="woof_settings[<?php echo $key ?>][placeholder]" value="<?php echo $woof_settings[$key]['placeholder'] ?>" />
     <input type="hidden" name="woof_settings[<?php echo $key ?>][btn_label]" value="<?php echo $woof_settings[$key]['btn_label'] ?>" />
-    <input type="hidden" name="woof_settings[<?php echo $key ?>][notes_for_customer]" value="<?php echo $woof_settings[$key]['notes_for_customer'] ?>" />
+    <input type="hidden" name="woof_settings[<?php echo $key ?>][notes_for_customer]" value="<?php echo stripcslashes($woof_settings[$key]['notes_for_customer']); ?>" />
     <input type="hidden" name="woof_settings[<?php echo $key ?>][search_count]" value="<?php echo $woof_settings[$key]['search_count'] ?>" />
 
     <div id="woof-modal-content-<?php echo $key ?>" style="display: none;">

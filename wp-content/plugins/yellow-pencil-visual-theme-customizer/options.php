@@ -12,17 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-// arrow icon for list
-$arrow_icon = "<span class='dashicons yp-arrow-icon dashicons-arrow-up'></span><span class='dashicons yp-arrow-icon dashicons-arrow-down'></span>";
-
 /* ---------------------------------------------------- */
 /* All CSS Options and settings							*/
 /* ---------------------------------------------------- */
-echo "<ul class='yp-editor-list'>
+echo "<ul class='editor-panel-list list-active'>
 		
 		<li class='text-option'>
 		
-			<h3>Text ".$arrow_icon."</h3>
+			<h3>Text</h3>
 			<div class='yp-this-content'>
 
 				".yp_get_select_markup(
@@ -32,11 +29,17 @@ echo "<ul class='yp-editor-list'>
 					"",
 					'Set a font family.'
 				)."
-				
-				
+
+				<div class='option-group-class'>
+				".yp_get_color_markup(
+					'color',
+					'Color',
+					'Set the text color.'
+				)."
+							
 				".yp_get_select_markup(
 					'font-weight',
-					'Font Weight',
+					'Weight',
 					array(
 						'300' => 'Light'.' 300',
 						'400' => 'normal'.' 400',
@@ -47,13 +50,84 @@ echo "<ul class='yp-editor-list'>
 					"",
 					'Sets how thick or thin characters in text should be displayed.'
 				)."
-	
-				".yp_get_color_markup(
-					'color',
-					'Color',
-					'Set the text color.'
+				</div>
+
+				".yp_get_slider_markup(
+					'font-size',
+					'Font Size',
+					"",
+					1,        // steps
+					'8,100',   // px value
+					'0,100',  // percentage value
+					'1,6',     // Em value
+					'Sets the size of a font.'
+				)."
+				
+				".yp_get_slider_markup(
+					'line-height',
+					'Line Height',
+					"",
+					0.1,        // steps
+					'0,100',   // px value
+					'0,100',  // percentage value
+					'1,6',     // Em value,
+					'Set the leading.'
+				)."
+				
+				<div class='option-group-class option-group-less'>
+				".yp_get_radio_markup(
+					'font-style',
+					'Style',
+					array(
+						'normal' => 'normal',
+						'italic' => 'italic'
+					),
+					"",
+					'Specifies the font style for a text.'
+				)."
+				
+				".yp_get_radio_markup(
+					'text-transform',
+					'Transform',
+					array(
+						'none' => 'no',
+						'capitalize' => 'Aa',
+						'uppercase' => 'AA',
+						'lowercase' => 'aa',
+					),
+					"",
+					'Controls the capitalization of text.'					
+				)."
+				</div>
+
+				<div class='option-group-class option-group-less'>
+				".yp_get_radio_markup(
+					'text-decoration',
+					'Decoration',
+					array(
+						'none' => 'A',
+						'overline' => 'A',
+						'line-through' => 'A',
+						'underline' => 'A'
+					),
+					"",
+					'Specifies the decoration added to the text.'
 				)."
 
+				".yp_get_radio_markup(
+					'text-align',
+					'Align',
+					array(
+						'left' => '<span class="dashicons dashicons-editor-alignleft"></span>',
+						'center' => '<span class="dashicons dashicons-editor-aligncenter"></span>',
+						'right' => '<span class="dashicons dashicons-editor-alignright"></span>',
+						'justify' => '<span class="dashicons dashicons-editor-justify"></span>'
+					),
+					"",
+					'Specifies the horizontal alignment of text in an element.'
+				)."
+				</div>
+				
 				".yp_get_select_markup(
 					'text-shadow',
 					'Text Shadow',
@@ -70,115 +144,38 @@ echo "<ul class='yp-editor-list'>
 					'Adds shadow to text.'
 				)."
 
-				".yp_get_slider_markup(
-					'font-size',
-					'Font Size',
-					"",
-					0,        // decimals
-					'8,100',   // px value
-					'0,100',  // percentage value
-					'1,6',     // Em value
-					'Sets the size of a font.',
-					'px,%,em,vw,vh'
-				)."
-				
-				".yp_get_slider_markup(
-					'line-height',
-					'Line Height',
-					"",
-					1,        // decimals
-					'0,100',   // px value
-					'0,100',  // percentage value
-					'1,6',     // Em value,
-					'Set the leading.',
-					'px,%,em,vw,vh'
-				)."
-				
-				".yp_get_radio_markup(
-					'font-style',
-					'Font Style',
-					array(
-						'normal' => 'Normal',
-						'italic' => 'Italic'
-					),
-					"",
-					'Specifies the font style for a text.'
-				)."
-
-				".yp_get_radio_markup(
-					'text-align',
-					'Text Align',
-					array(
-						'left' => 'left',
-						'center' => 'center',
-						'right' => 'right',
-						'justify' => 'justify'
-					),
-					"",
-					'Specifies the horizontal alignment of text in an element.'
-				)."
-				
-				".yp_get_radio_markup(
-					'text-transform',
-					'Text Transform',
-					array(
-						'none' => 'none',
-						'capitalize' => 'Cap',
-						'uppercase' => 'UP',
-						'lowercase' => 'low',
-					),
-					"",
-					'Controls the capitalization of text.'					
-				)."
-			
 				
 				".yp_get_slider_markup(
 					'letter-spacing',
 					'Letter Spacing',
 					"normal",
-					1,        // decimals
+					0.1,        // steps
 					'-5,10',   // px value
 					'0,100',  // percentage value
 					'-1,3',     // Em value
-					'Increases or decreases the space between characters in a text.',
-					'px,%,em,vw,vh'
+					'Increases or decreases the space between characters in a text.'
 				)."
 				
 				".yp_get_slider_markup(
 					'word-spacing',
 					'Word Spacing',
 					"normal",
-					1,        // decimals
+					0.1,        // steps
 					'-5,20',   // px value
 					'0,100',  // percentage value
 					'-1,3',     // Em value,
-					'Increases or decreases the white space between words.',
-					'px,%,em,vw,vh'
-				)."
-
-				".yp_get_radio_markup(
-					'text-decoration',
-					'Text Decoration',
-					array(
-						'none' => 'none',
-						'overline' => 'over',
-						'line-through' => 'through',
-						'underline' => 'under'
-					),
-					"",
-					'Specifies the decoration added to the text.'
-				)."
+					'Increases or decreases the white space between words.'
+				)."				
 
 				".yp_get_slider_markup(
 					'text-indent',
 					'Text Indent',
 					'',
-					0,        // decimals
+					1,        // steps
 					'-50,50',   // px value
 					'-100,100',  // percentage value
 					'-15,15',     // Em value
-					'Specifies the indentation of the first line in a text-block.',
-					'px,%,em,vw,vh'
+					'Specifies the indentation of the first line in a text-block.'
 				)."
 
 				".yp_get_radio_markup(
@@ -196,38 +193,37 @@ echo "<ul class='yp-editor-list'>
 		</li>
 		
 		<li class='background-option'>
-			<h3>Background ".$arrow_icon."</h3>
+			<h3>Background</h3>
 			<div class='yp-this-content'>
 				
 				".yp_get_color_markup(
 					'background-color',
-					'Background Color',
+					'Color',
 					'Sets the background color of an element.'
 				)."
 				
 				".yp_get_input_markup(
 					'background-image',
-					'Background Image',
-					"none",
+					'Image',
 					'Sets background image for an element.'
 				)."
 
 				".yp_get_radio_markup(
-					'background-clip',
-					'Background Clip',
+					'background-size',
+					'Size',
 					array(
-						'text' => 'text',
-						'border-box' => 'border',
-						'padding-box' => 'padding',
-						'content-box' => 'content'
+						'auto' => 'custom',
+						'cover' => 'cover',
+						'contain' => 'contain'
 					),
 					"",
-					"Defines how far the background should extend within the element."
+					'The size of the background image.'
 				)."
 
+				<div class='option-group-class'>
 				".yp_get_select_markup(
 					'background-blend-mode',
-					'Background Blend Mode',
+					'Blend Mode',
 					array(
 						'normal' => 'normal',
 						'multiply' => 'multiply',
@@ -244,73 +240,71 @@ echo "<ul class='yp-editor-list'>
 					'Defines the blending mode of background color and image.'
 				)."
 
+				".yp_get_radio_markup(
+					'background-attachment',
+					'Fixed',
+					array(
+						'fixed' => 'fixed',
+						'scroll' => 'scroll',
+					),
+					"",
+					'Sets whether a background image is fixed or scrolls with the rest of the page.'
+				)."	
+
+				</div>
+
 				".yp_get_slider_markup(
 					'background-position-x',
-					'Background X Position',
+					'Horizontal Position',
 					"",
-					0,        // decimals
+					1,        // steps
 					'0,200',   // px value
 					'0,100',  // percentage value
 					'0,26',     // Em value,
-					'Sets the horizontal starting position of a background image.',
-					'px,%,em,vw,vh'
+					'Sets the horizontal starting position of a background image.'
 				)."
 
 				".yp_get_slider_markup(
 					'background-position-y',
-					'Background Y Position',
+					'Vertical Position',
 					"",
-					0,        // decimals
+					1,        // steps
 					'0,200',   // px value
 					'0,100',  // percentage value
 					'0,26',     // Em value,
-					'Sets the vertical starting position of a background image.',
-					'px,%,em,vw,vh'
+					'Sets the vertical starting position of a background image.'
 				)."
 
 				".yp_get_radio_markup(
-					'background-size',
-					'Background Size',
-					array(
-						'auto' => 'auto',
-						'length' => 'length',
-						'cover' => 'cover',
-						'contain' => 'contain'
-					),
-					"",
-					'The size of the background image.'
-				)."				
-				
-				".yp_get_radio_markup(
 					'background-repeat',
-					'Background Repeat',
+					'Tile',
 					array(
-						'repeat' => 'repeat',
-						'repeat-x' => 'repeat-x',
-						'repeat-y' => 'repeat-y',
-						'no-repeat' => 'no-repeat'
+						'repeat' => '<svg focusable="false" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M1 1h4v4H1zm5 0h4v4H6zm5 0h4v4h-4zM1 6h4v4H1zm5 0h4v4H6zm5 0h4v4h-4zM1 11h4v4H1zm5 0h4v4H6zm5 0h4v4h-4z"></path></svg>',
+						'repeat-x' => '<svg focusable="false" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M1 6h4v4H1zm5 0h4v4H6zm5 0h4v4h-4z"></path></svg>',
+						'repeat-y' => '<svg focusable="false" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M6 1h4v4H6zm0 5h4v4H6zm0 5h4v4H6z"></path></svg>',
+						'no-repeat' => '<span class="dashicons dashicons-no-alt"></span>'
 					),
 					"",
 					'Sets if the background image will be repeated.'
-				)."
-				
+				)."	
+
 				".yp_get_radio_markup(
-					'background-attachment',
-					'Background Attachment',
+					'background-clip',
+					'Clip',
 					array(
-						'scroll' => 'scroll',
-						'fixed' => 'fixed',
-						'local' => 'local'
+						'text' => 'text',
+						'border-box' => 'border',
+						'padding-box' => 'padding'
 					),
 					"",
-					'Sets whether a background image is fixed or scrolls with the rest of the page.'
-				)."				
-				
+					"Defines how far the background should extend within the element."
+				)."
+
 			</div>
 		</li>
 		
 		<li class='margin-option'>
-			<h3>Margin ".$arrow_icon."</h3>
+			<h3>Margin</h3>
 			<div class='yp-this-content'>
 
 				<div class='lock-btn'></div>
@@ -319,55 +313,51 @@ echo "<ul class='yp-editor-list'>
 					'margin-left',
 					'Margin Left',
 					"auto",
-					0,        // decimals
+					1,        // steps
 					'-50,200',   // px value
 					'-100,100',  // percentage value
 					'-6,26',     // Em value,
-					'Sets the left margin of an element.',
-					'px,%,em,vw,vh'
+					'Sets the left margin of an element.'
 				)."
 				
 				".yp_get_slider_markup(
 					'margin-right',
 					'Margin Right',
 					"auto",
-					0,        // decimals
+					1,        // steps
 					'-50,200',   // px value
 					'-100,100',  // percentage value
 					'-6,26',     // Em value
-					'Sets the right margin of an element.',
-					'px,%,em,vw,vh'
+					'Sets the right margin of an element.'
 				)."
 
 				".yp_get_slider_markup(
 					'margin-top',
 					'Margin Top',
 					'',
-					0,        // decimals
+					1,        // steps
 					'-50,200',   // px value
 					'-100,100',  // percentage value
 					'-6,26',     // Em value
-					'Sets the top margin of an element.',
-					'px,%,em,vw,vh'
+					'Sets the top margin of an element.'
 				)."
 				
 				".yp_get_slider_markup(
 					'margin-bottom',
 					'Margin Bottom',
 					'',
-					0,        // decimals
+					1,        // steps
 					'-50,200',   // px value
 					'-100,100',  // percentage value
 					'-6,26',     // Em value
-					'Sets the bottom margin of an element.',
-					'px,%,em,vw,vh'
+					'Sets the bottom margin of an element.'
 				)."
 				
 			</div>
 		</li>
 		
 		<li class='padding-option'>
-			<h3>Padding ".$arrow_icon."</h3>
+			<h3>Padding</h3>
 			<div class='yp-this-content'>
 				
 				<div class='lock-btn'></div>
@@ -376,48 +366,44 @@ echo "<ul class='yp-editor-list'>
 					'padding-left',
 					'Padding Left',
 					'',
-					0,        // decimals
+					1,        // steps
 					'0,200',   // px value
 					'0,100',  // percentage value
 					'0,26',     // Em value
-					'Sets the left padding (space) of an element.',
-					'px,%,em,vw,vh'
+					'Sets the left padding (space) of an element.'
 				)."
 
 				".yp_get_slider_markup(
 					'padding-right',
 					'Padding Right',
 					'',
-					0,        // decimals
+					1,        // steps
 					'0,200',   // px value
 					'0,100',  // percentage value
 					'0,26',     // Em value
-					'Sets the right padding (space) of an element.',
-					'px,%,em,vw,vh'
+					'Sets the right padding (space) of an element.'
 				)."
 
 				".yp_get_slider_markup(
 					'padding-top',
 					'Padding Top',
 					'',
-					0,        // decimals
+					1,        // steps
 					'0,200',   // px value
 					'0,100',  // percentage value
 					'0,26',     // Em value
-					'Sets the top padding (space) of an element.',
-					'px,%,em,vw,vh'
+					'Sets the top padding (space) of an element.'
 				)."
 
 				".yp_get_slider_markup(
 					'padding-bottom',
 					'Padding Bottom',
 					'',
-					0,        // decimals
+					1,        // steps
 					'0,200',   // px value
 					'0,100',  // percentage value
 					'0,26',     // Em value
-					'Sets the bottom padding (space) of an element.',
-					'px,%,em,vw,vh'
+					'Sets the bottom padding (space) of an element.'
 				)."
 
 			</div>
@@ -425,7 +411,7 @@ echo "<ul class='yp-editor-list'>
 
 		
 		<li class='border-option'>
-			<h3>Border ".$arrow_icon."</h3>
+			<h3>Border</h3>
 			<div class='yp-this-content'>
 
 				".yp_get_radio_markup(
@@ -444,146 +430,145 @@ echo "<ul class='yp-editor-list'>
 				
 				<div class='yp-border-all-section'>
 
+					<div class='option-group-class'>
+					".yp_get_color_markup(
+						'border-color',
+						'Color',
+						'Sets the color of an element&#39;s four borders.'
+					)."
+
 					".yp_get_radio_markup(
 						'border-style',
-						'Border Style',
+						'Style',
 						array(
-							'none' => 'none',
-							'solid' => 'solid',
-							'dotted' => 'dotted',
-							'dashed' => 'dashed',
-							'hidden' => 'hidden'
+							'none' => '<span class="dashicons dashicons-no-alt"></span>',
+							'solid' => '',
+							'dotted' => '',
+							'dashed' => ''
 						),
 						"",
 						'Sets the style of an element&#39;s four borders.'
 					)."
-					
+					</div>
 					
 					".yp_get_slider_markup(
 						'border-width',
-						'Border Width',
+						'Width',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,20',   // px value
 						'0,100',  // percentage value
 						'0,3',     // Em value
-						'Sets the width of an element&#39;s four borders.',
-						'px,%,em,vw,vh'
-					)."
-
-					".yp_get_color_markup(
-						'border-color',
-						'Border Color',
-						'Sets the color of an element&#39;s four borders.'
+						'Sets the width of an element&#39;s four borders.'
 					)."
 
 				</div>
 				
 				<div class='yp-border-top-section'>
 
+					<div class='option-group-class'>
+					".yp_get_color_markup(
+						'border-top-color',
+						'Color',
+						'Sets the color of an element&#39;s top border.'
+					)."
+					
 					".yp_get_radio_markup(
 						'border-top-style',
-						'Border Top Style',
+						'Style',
 						array(
-							'none' => 'none',
-							'solid' => 'solid',
-							'dotted' => 'dotted',
-							'dashed' => 'dashed',
-							'hidden' => 'hidden'
+							'none' => '<span class="dashicons dashicons-no-alt"></span>',
+							'solid' => '',
+							'dotted' => '',
+							'dashed' => ''
 						),
 						"",
 						'Sets the style of an element&#39;s top border.'
 					)."
+					</div>
 					
 					".yp_get_slider_markup(
 						'border-top-width',
-						'Border Top Width',
+						'Width',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,20',   // px value
 						'0,100',  // percentage value
 						'0,3',     // Em value
-						'Sets the width of an element&#39;s top border.',
-						'px,%,em,vw,vh'
-					)."
-
-					".yp_get_color_markup(
-						'border-top-color',
-						'Border Top Color',
-						'Sets the color of an element&#39;s top border.'
+						'Sets the width of an element&#39;s top border.'
 					)."
 
 				</div>
 				
 				<div class='yp-border-right-section'>
 
+					<div class='option-group-class'>
+					".yp_get_color_markup(
+						'border-right-color',
+						'Color',
+						'Sets the color of an element&#39;s right border.'
+					)."
+
 					".yp_get_radio_markup(
 						'border-right-style',
-						'Border Right Style',
+						'Style',
 						array(
-							'none' => 'none',
-							'solid' => 'solid',
-							'dotted' => 'dotted',
-							'dashed' => 'dashed',
-							'hidden' => 'hidden'
+							'none' => '<span class="dashicons dashicons-no-alt"></span>',
+							'solid' => '',
+							'dotted' => '',
+							'dashed' => ''
 						),
 						"",
 						'Sets the style of an element&#39;s right border.'
 					)."
+					</div>
 					
 					".yp_get_slider_markup(
 						'border-right-width',
-						'Border Right Width',
+						'Width',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,20',   // px value
 						'0,100',  // percentage value
 						'0,3',     // Em value
-						'Sets the width of an element&#39;s right border.',
-						'px,%,em,vw,vh'
-					)."
-
-					".yp_get_color_markup(
-						'border-right-color',
-						'Border Right Color',
-						'Sets the color of an element&#39;s right border.'
+						'Sets the width of an element&#39;s right border.'
 					)."
 
 				</div>
 				
 				
 				<div class='yp-border-bottom-section'>
-				
+					
+					<div class='option-group-class'>
+					".yp_get_color_markup(
+						'border-bottom-color',
+						'Color',
+						'Sets the color of an element&#39;s bottom border.'
+					)."
+
 					".yp_get_radio_markup(
 						'border-bottom-style',
-						'Border Bottom Style',
+						'Style',
 						array(
-							'none' => 'none',
-							'solid' => 'solid',
-							'dotted' => 'dotted',
-							'dashed' => 'dashed',
-							'hidden' => 'hidden'
+							'none' => '<span class="dashicons dashicons-no-alt"></span>',
+							'solid' => '',
+							'dotted' => '',
+							'dashed' => ''
 						),
 						"",
 						'Sets the style of an element&#39;s bottom border.'
 					)."
+					</div>
 					
 					".yp_get_slider_markup(
 						'border-bottom-width',
-						'Border Bottom Width',
+						'Width',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,20',   // px value
 						'0,100',  // percentage value
 						'0,3',     // Em value
-						'Sets the width of an element&#39;s bottom border.',
-						'px,%,em,vw,vh'
-					)."
-
-					".yp_get_color_markup(
-						'border-bottom-color',
-						'Border Bottom Color',
-						'Sets the color of an element&#39;s bottom border.'
+						'Sets the width of an element&#39;s bottom border.'
 					)."
 
 				</div>
@@ -591,36 +576,36 @@ echo "<ul class='yp-editor-list'>
 				
 				<div class='yp-border-left-section'>
 
+					<div class='option-group-class'>
+					".yp_get_color_markup(
+						'border-left-color',
+						'Color',
+						'Sets the color of an element&#39;s left border.'
+					)."
+
 					".yp_get_radio_markup(
 						'border-left-style',
-						'Border Left Style',
+						'Style',
 						array(
-							'none' => 'none',
-							'solid' => 'solid',
-							'dotted' => 'dotted',
-							'dashed' => 'dashed',
-							'hidden' => 'hidden'
+							'none' => '<span class="dashicons dashicons-no-alt"></span>',
+							'solid' => '',
+							'dotted' => '',
+							'dashed' => ''
 						),
 						"",
 						'Sets the style of an element&#39;s left border.'
 					)."
+					</div>
 					
 					".yp_get_slider_markup(
 						'border-left-width',
-						'Border Left Width',
+						'Width',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,20',   // px value
 						'0,100',  // percentage value
 						'0,3',     // Em value
-						'Sets the width of an element&#39;s left border.',
-						'px,%,em,vw,vh'
-					)."
-
-					".yp_get_color_markup(
-						'border-left-color',
-						'Border Left Color',
-						'Sets the color of an element&#39;s left border.'
+						'Sets the width of an element&#39;s left border.'
 					)."
 				
 				</div>
@@ -629,7 +614,7 @@ echo "<ul class='yp-editor-list'>
 		</li>
 		
 		<li class='border-radius-option'>
-			<h3>Border Radius ".$arrow_icon."</h3>
+			<h3>Border Radius</h3>
 			<div class='yp-this-content'>
 				
 				<div class='lock-btn'></div>
@@ -637,67 +622,62 @@ echo "<ul class='yp-editor-list'>
 					'border-top-left-radius',
 					'Top Left Radius',
 					'',
-					"0",        // decimals
+					"1",        // steps
 					'0,50',   // px value
 					'0,50',  // percentage value
 					'0,6',     // Em value
-					'Defines the radius of the top-left corner.',
-					'px,%,em,vw,vh'
+					'Defines the radius of the top-left corner.'
 				)."
 				
 				".yp_get_slider_markup(
 					'border-top-right-radius',
 					'Top Right Radius',
 					'',
-					"0",        // decimals
+					"1",        // steps
 					'0,50',   // px value
 					'0,50',  // percentage value
 					'0,6',     // Em value
-					'Defines the radius of the top-right corner.',
-					'px,%,em,vw,vh'
+					'Defines the radius of the top-right corner.'
 				)."
 
 				".yp_get_slider_markup(
 					'border-bottom-left-radius',
 					'Bottom Left Radius',
 					'',
-					"0",        // decimals
+					"1",        // steps
 					'0,50',   // px value
 					'0,50',  // percentage value
 					'0,6',     // Em value
-					'Defines the radius of the bottom-left corner.',
-					'px,%,em,vw,vh'
+					'Defines the radius of the bottom-left corner.'
 				)."
 				
 				".yp_get_slider_markup(
 					'border-bottom-right-radius',
 					'Bottom Right Radius',
 					'',
-					"0",        // decimals
+					"1",        // steps
 					'0,50',   // px value
 					'0,50',  // percentage value
 					'0,6',     // Em value
-					'Defines the radius of the bottom-right corner.',
-					'px,%,em,vw,vh'
+					'Defines the radius of the bottom-right corner.'
 				)."
 				
 			</div>
 		</li>
 		
 		<li class='position-option'>
-			<h3>Position ".$arrow_icon."</h3>
+			<h3>Position</h3>
 			<div class='yp-this-content'>
 
 				".yp_get_slider_markup(
 					'z-index',
 					'Z Index',
 					"auto",
-					0,        // decimals
+					1,        // steps
 					'-10,1000',   // px value
 					'-10,1000',  // percentage value
 					'-10,1000',     // Em value
-					'Specifies the stack order of an element. Z index only works on positioned elements (absolute, relative, or fixed).',
-					'px,%,em,vw,vh'
+					'Specifies the stack order of an element. Z index only works on positioned elements (absolute, relative, or fixed).'
 				)."	
 				
 				".yp_get_radio_markup(
@@ -719,87 +699,81 @@ echo "<ul class='yp-editor-list'>
 					'top',
 					'Top',
 					"auto",
-					0,        // decimals
+					1,        // steps
 					'-200,400',   // px value
 					'0,100',  // percentage value
 					'-12,12',     // Em value
-					'For absolutely: positioned elements, the top property sets the top edge of an element to a unit above/below the top edge of its containing element.<br><br>For relatively: positioned elements, the top property sets the top edge of an element to a unit above/below its normal position.',
-					'px,%,em,vw,vh'
+					'For absolutely: positioned elements, the top property sets the top edge of an element to a unit above/below the top edge of its containing element.<br><br>For relatively: positioned elements, the top property sets the top edge of an element to a unit above/below its normal position.'
 				)."
 
 				".yp_get_slider_markup(
 					'left',
 					'Left',
 					"auto",
-					0,        // decimals
+					1,        // steps
 					'-200,400',   // px value
 					'0,100',  // percentage value
 					'-12,12',     // Em value
-					'For absolutely: positioned elements, the left property sets the left edge of an element to a unit to the left/right of the left edge of its containing element.<br><br>For relatively: positioned elements, the left property sets the left edge of an element to a unit to the left/right to its normal position.',
-					'px,%,em,vw,vh'
+					'For absolutely: positioned elements, the left property sets the left edge of an element to a unit to the left/right of the left edge of its containing element.<br><br>For relatively: positioned elements, the left property sets the left edge of an element to a unit to the left/right to its normal position.'
 				)."
 
 				".yp_get_slider_markup(
 					'bottom',
 					'Bottom',
 					"auto",
-					0,        // decimals
+					1,        // steps
 					'-200,400',   // px value
 					'0,100',  // percentage value
 					'-12,12',     // Em value
-					'For absolutely: positioned elements, the bottom property sets the bottom edge of an element to a unit above/below the bottom edge of its containing element.<br><br>For relatively: positioned elements, the bottom property sets the bottom edge of an element to a unit above/below its normal position.',
-					'px,%,em,vw,vh'
+					'For absolutely: positioned elements, the bottom property sets the bottom edge of an element to a unit above/below the bottom edge of its containing element.<br><br>For relatively: positioned elements, the bottom property sets the bottom edge of an element to a unit above/below its normal position.'
 				)."
 				
 				".yp_get_slider_markup(
 					'right',
 					'Right',
 					"auto",
-					0,        // decimals
+					1,        // steps
 					'-200,400',   // px value
 					'0,100',  // percentage value
 					'-12,12',     // Em value
-					'For absolutely: positioned elements, the right property sets the right edge of an element to a unit to the left/right of the right edge of its containing element.<br><br>For relatively: positioned elements, the right property sets the right edge of an element to a unit to the left/right to its normal position.',
-					'px,%,em,vw,vh'
+					'For absolutely: positioned elements, the right property sets the right edge of an element to a unit to the left/right of the right edge of its containing element.<br><br>For relatively: positioned elements, the right property sets the right edge of an element to a unit to the left/right to its normal position.'
 				)."
 				
 			</div>
 		</li>
 		
 		<li class='size-option'>
-			<h3>Size <span class='yp-lite yp-badge'>PRO</span>".$arrow_icon."</h3>
+			<h3>Size</h3>
 			<div class='yp-this-content'>
-
+			
 				".yp_get_slider_markup(
 					'width',
 					'Width',
 					"auto",
-					0,        // decimals
+					1,        // steps
 					'0,500',   // px value
 					'0,100',  // percentage value
 					'0,52',     // Em value
-					'Sets the width of an element.',
-					'px,%,em,vw,vh'
+					'Sets the width of an element.'
 				)."
 				
 				".yp_get_slider_markup(
 					'height',
 					'Height',
 					"auto",
-					0,        // decimals
+					1,        // steps
 					'0,500',   // px value
 					'0,100',  // percentage value
 					'0,52',     // Em value
-					'Sets the height of an element',
-					'px,%,em,vw,vh'
+					'Sets the height of an element'
 				)."
 
 				".yp_get_radio_markup(
 					'box-sizing',
 					'Box Sizing',
 					array(
-						'border-box' => 'border-box',
-						'content-box' => 'content-box'
+						'border-box' => 'border',
+						'content-box' => 'content'
 					),
 					false,
 					'Defines how the width and height of an element are calculated: should they include padding and borders, or not.'
@@ -809,48 +783,44 @@ echo "<ul class='yp-editor-list'>
 					'min-width',
 					'Min Width',
 					"initial",
-					0,        // decimals
+					1,        // steps
 					'0,500',   // px value
 					'0,100',  // percentage value
 					'0,52',     // Em value
-					'Set the minimum width of an element.',
-					'px,%,em,vw,vh'
+					'Set the minimum width of an element.'
+				)."
+
+				".yp_get_slider_markup(
+					'max-width',
+					'Max Width',
+					"none",
+					1,        // steps
+					'0,500',   // px value
+					'0,100',  // percentage value
+					'0,52',     // Em value
+					'Set the maximum width of an element.'
 				)."
 
 				".yp_get_slider_markup(
 					'min-height',
 					'Min Height',
 					"initial",
-					0,        // decimals
+					1,        // steps
 					'0,500',   // px value
 					'0,100',  // percentage value
 					'0,52',    // Em value
-					'Set the minimum height of an element.',
-					'px,%,em,vw,vh'
-				)."
-				
-				".yp_get_slider_markup(
-					'max-width',
-					'Max Width',
-					"none",
-					0,        // decimals
-					'0,500',   // px value
-					'0,100',  // percentage value
-					'0,52',     // Em value
-					'Set the maximum width of an element.',
-					'px,%,em,vw,vh'
+					'Set the minimum height of an element.'
 				)."
 				
 				".yp_get_slider_markup(
 					'max-height',
 					'Max Height',
 					"none",
-					0,        // decimals
+					1,        // steps
 					'0,500',   // px value
 					'0,100',  // percentage value
 					'0,52',     // Em value
-					'Set the maximum height of an element.',
-					'px,%,em,vw,vh'
+					'Set the maximum height of an element.'
 				)."
 				
 				
@@ -858,12 +828,12 @@ echo "<ul class='yp-editor-list'>
 		</li>
 
 		<li class='flex-option'>
-			<h3>Flexbox ".$arrow_icon."</h3>
+			<h3>Flexbox</h3>
 			<div class='yp-this-content'>
 
 				".yp_get_select_markup(
 					'flex-direction',
-					'Flex Direction',
+					'Direction',
 					array(
 						'row' => 'row',
 						'row-reverse' => 'row-reverse',
@@ -876,7 +846,7 @@ echo "<ul class='yp-editor-list'>
 
 				".yp_get_radio_markup(
 					'flex-wrap',
-					'Flex Wrap',
+					'Wrap',
 					array(
 						'nowrap' => 'nowrap',
 						'wrap' => 'wrap',
@@ -951,45 +921,42 @@ echo "<ul class='yp-editor-list'>
 
 				".yp_get_slider_markup(
 					'flex-grow',
-					'Flex Grow',
+					'Grow',
 					'',
-					0,        // decimals
+					1,        // steps
 					'0,20',   // px value
 					'0,20',  // percentage value
 					'0,20',     // Em value
-					'Specifies how much the item will grow relative to the rest of the flexible items inside the same container.',
-					'px,%,em,vw,vh'
+					'Specifies how much the item will grow relative to the rest of the flexible items inside the same container.'
 				)."
 
 				".yp_get_slider_markup(
 					'flex-shrink',
-					'Flex Shrink',
+					'Shrink',
 					'',
-					0,        // decimals
+					1,        // steps
 					'0,20',   // px value
 					'0,20',  // percentage value
 					'0,20',     // Em value
-					'Specifies how the item will shrink relative to the rest of the flexible items inside the same container.',
-					'px,%,em,vw,vh'
+					'Specifies how the item will shrink relative to the rest of the flexible items inside the same container.'
 				)."
 
 				".yp_get_slider_markup(
 					'flex-basis',
-					'Flex Basis',
+					'Basis',
 					"auto",
-					0,        // decimals
+					1,        // steps
 					'0,500',   // px value
 					'0,100',  // percentage value
 					'0,52',     // Em value
-					'Specifies the initial length of a flexible item.',
-					'px,%,em,vw,vh'
+					'Specifies the initial length of a flexible item.'
 				)."
 
 			</div>
 		</li>
 
 		<li class='grid-option'>
-			<h3>Grid ".$arrow_icon."</h3>
+			<h3>Grid</h3>
 			<div class='yp-this-content'>
 
 				".yp_grid_builder(
@@ -1004,30 +971,7 @@ echo "<ul class='yp-editor-list'>
 					'Specifies the number (and the heights) of the rows in a grid layout.'
 				)."
 
-				".yp_get_slider_markup(
-					'grid-column-gap',
-					'Grid Column Gap',
-					'normal',
-					0,        // decimals
-					'0,100',   // px value
-					'0,100',  // percentage value
-					'0,100',     // Em value
-					'Defines the size of the gap between the columns in a grid layout.',
-					'px,%,em,vw,vh'
-				)."
-
-				".yp_get_slider_markup(
-					'grid-row-gap',
-					'Grid Row Gap',
-					'normal',
-					0,        // decimals
-					'0,100',   // px value
-					'0,100',  // percentage value
-					'0,100',     // Em value
-					'Defines the size of the gap between the rows in a grid layout.',
-					'px,%,em,vw,vh'
-				)."
-
+				<div class='option-group-class'>
 				".yp_get_select_markup(
 					'justify-items',
 					'Justify Items',
@@ -1053,12 +997,35 @@ echo "<ul class='yp-editor-list'>
 					"",
 					'Defines how the items will be aligned vertically in each row.'
 				)."
+				</div>
+
+				".yp_get_slider_markup(
+					'grid-column-gap',
+					'Grid Column Gap',
+					'normal',
+					1,        // steps
+					'0,100',   // px value
+					'0,100',  // percentage value
+					'0,100',     // Em value
+					'Defines the size of the gap between the columns in a grid layout.'
+				)."
+
+				".yp_get_slider_markup(
+					'grid-row-gap',
+					'Grid Row Gap',
+					'normal',
+					1,        // steps
+					'0,100',   // px value
+					'0,100',  // percentage value
+					'0,100',     // Em value
+					'Defines the size of the gap between the rows in a grid layout.'
+				)."
 
 			</div>
 		</li>
 		
 		<li class='lists-option'>
-			<h3>Lists ".$arrow_icon."</h3>
+			<h3>Lists</h3>
 			<div class='yp-this-content'>
 
 				".yp_get_select_markup(
@@ -1080,7 +1047,6 @@ echo "<ul class='yp-editor-list'>
 				".yp_get_input_markup(
 					'list-style-image',
 					'List Style Image',
-					"none",
 					'Replaces the list-item marker with an image.'
 				)."
 
@@ -1088,7 +1054,6 @@ echo "<ul class='yp-editor-list'>
 					'list-style-position',
 					'List Style Position',
 					array(
-						'none' => 'none',
 						'inside' => 'inside',
 						'outside' => 'outside'
 					),
@@ -1100,7 +1065,7 @@ echo "<ul class='yp-editor-list'>
 		</li>
 
 		<li class='animation-option'>
-			<h3>Animation <span class='yp-lite yp-badge'>PRO</span><span class='yp-badge yp-anim-recording'>Rec</span> ".$arrow_icon."</h3>
+			<h3>Animation <span class='yp-badge yp-anim-recording'>Rec</span></h3>
 			<div class='yp-this-content'>
 				
 				";
@@ -1110,66 +1075,79 @@ echo "<ul class='yp-editor-list'>
 
 				// If animation Generator Open
 				if($filter_animation_tools){
-					echo "<div class='animation-links-control yp-just-desktop'>
-					<a class='yp-advanced-link yp-special-css-link yp-just-desktop yp-add-animation-link'>Create Animation</a>
-					</div>";
+					echo "<a class='yp-advanced-link yp-just-desktop yp-add-animation-link'>Create Animation</a>";
 				}
 
 				// Default animations
 				$animations = array(
-					'none' => 'none',
-					'bounce' => 'bounce',
-					'spin' => 'spin',
-					'flash' => 'flash',
-					'swing' => 'swing',
-					'pulse' => 'pulse',
-					'rubberBand' => 'rubberBand',
-					'shake' => 'shake',
-					'tada' => 'tada',
-					'wobble' => 'wobble',
-					'jello' => 'jello',
-					'bounceIn' => 'bounceIn',
-						
-					'spaceInUp' => 'spaceInUp',
-					'spaceInRight' => 'spaceInRight',
-					'spaceInDown' => 'spaceInDown',
-					'spaceInLeft' => 'spaceInLeft',
-					'push' => 'push',
-					'pop' => 'pop',
-					'bob' => 'bob',
-					'wobble-horizontal' => 'wobble-horizontal',
-											
-					'bounceInDown' => 'bounceInDown',
-					'bounceInLeft' => 'bounceInLeft',
-					'bounceInRight' => 'bounceInRight',
-					'bounceInUp' => 'bounceInUp',
-					'fadeIn' => 'fadeIn',
-					'fadeInDown' => 'fadeInDown',
-					'fadeInDownBig' => 'fadeInDownBig',
-					'fadeInLeft' => 'fadeInLeft',
-					'fadeInLeftBig' => 'fadeInLeftBig',
-					'fadeInRight' => 'fadeInRight',
-					'fadeInRightBig' => 'fadeInRightBig',
-					'fadeInUp' => 'fadeInUp',
-					'fadeInUpBig' => 'fadeInUpBig',
-					'flipInX' => 'flipInX',
-					'flipInY' => 'flipInY',
-					'lightSpeedIn' => 'lightSpeedIn',
-					'rotateIn' => 'rotateIn',
-					'rotateInDownLeft' => 'rotateInDownLeft',
-					'rotateInDownRight' => 'rotateInDownRight',
-					'rotateInUpLeft' => 'rotateInUpLeft',
-					'rotateInUpRight' => 'rotateInUpRight',
-					'rollIn' => 'rollIn',
-					'zoomIn' => 'zoomIn',
-					'zoomInDown' => 'zoomInDown',
-					'zoomInLeft' => 'zoomInLeft',
-					'zoomInRight' => 'zoomInRight',
-					'zoomInUp' => 'zoomInUp',
-					'slideInDown' => 'slideInDown',
-					'slideInLeft' => 'slideInLeft',
-					'slideInRight' => 'slideInRight',
-					'slideInUp' => 'slideInUp'
+
+					'none' => ['none', 'basic'],
+					'pulse' => ['pulse', 'basic'],
+					'push' => ['push', 'basic'],
+					'bob' => ['bob', 'basic'],
+					'pop' => ['pop', 'basic'],
+
+					'bounce' => ['bounce', 'common'],
+					'flash' => ['flash', 'common'],
+					'rubberBand' => ['rubberBand', 'common'],
+					'shake' => ['shake', 'common'],
+					'swing' => ['swing', 'common'],
+					'tada' => ['tada', 'common'],
+					'wobble' => ['wobble', 'common'],
+					'wobble-horizontal' => ['wobble-horizontal', 'common'],
+					'jello' => ['jello', 'common'],
+					'heartBeat' => ['heartBeat', 'common'],
+					'spin' => ['spin', 'common'],
+
+					'bounceIn' => ['bounceIn', 'bounce'],
+					'bounceInDown' => ['bounceInDown', 'bounce'],
+					'bounceInLeft' => ['bounceInLeft', 'bounce'],
+					'bounceInRight' => ['bounceInRight', 'bounce'],
+					'bounceInUp' => ['bounceInUp', 'bounce'],
+
+					'fadeIn' => ['fadeIn', 'fade'],
+					'fadeInDown' => ['fadeInDown', 'fade'],
+					'fadeInDownBig' => ['fadeInDownBig', 'fade'],
+					'fadeInLeft' => ['fadeInLeft', 'fade'],
+					'fadeInLeftBig' => ['fadeInLeftBig', 'fade'],
+					'fadeInRight' => ['fadeInRight', 'fade'],
+					'fadeInRightBig' => ['fadeInRightBig', 'fade'],
+					'fadeInUp' => ['fadeInUp', 'fade'],
+					'fadeInUpBig' => ['fadeInUpBig', 'fade'],
+
+					'flip' => ['flip', 'flip'],
+					'flipInX' => ['flipInX', 'flip'],
+					'flipInY' => ['flipInY', 'flip'],
+					'flipOutX' => ['flipOutX', 'flip'],
+					'flipOutY' => ['flipOutY', 'flip'],
+
+					'rotateIn' => ['rotateIn', 'rotate'],
+					'rotateInDownLeft' => ['rotateInDownLeft', 'rotate'],
+					'rotateInDownRight' => ['rotateInDownRight', 'rotate'],
+					'rotateInUpLeft' => ['rotateInUpLeft', 'rotate'],
+					'rotateInUpRight' => ['rotateInUpRight', 'rotate'],
+
+					'slideInUp' => ['slideInUp', 'slide'],
+					'slideInDown' => ['slideInDown', 'slide'],
+					'slideInLeft' => ['slideInLeft', 'slide'],
+					'slideInRight' => ['slideInRight', 'slide'],
+
+					'zoomIn' => ['zoomIn', 'zoom'],
+					'zoomInDown' => ['zoomInDown', 'zoom'],
+					'zoomInLeft' => ['zoomInLeft', 'zoom'],
+					'zoomInRight' => ['zoomInRight', 'zoom'],
+					'zoomInUp' => ['zoomInUp', 'zoom'],
+
+					'spaceInUp' => ['spaceInUp', 'space'],
+					'spaceInRight' => ['spaceInRight', 'space'],
+					'spaceInDown' => ['spaceInDown', 'space'],
+					'spaceInLeft' => ['spaceInLeft', 'space'],
+
+					'hinge' => ['hinge', 'others'],
+					'jackInTheBox' => ['jackInTheBox', 'others'],
+					'rollIn' => ['rollIn', 'others'],
+					'lightSpeedIn' => ['lightSpeedIn', 'others']
+
 				);
 
 				// Add dynamic animations.
@@ -1177,7 +1155,7 @@ echo "<ul class='yp-editor-list'>
 				foreach($all_options as $name => $value){
 					if(stristr($name, 'yp_anim')){
 						$name = str_replace("yp_anim_", "", $name);
-						$animations[$name] = ucwords(strtolower($name));
+						$animations[$name] = array(ucwords(strtolower($name)), "my animations");
 					}
 				}
 				
@@ -1189,9 +1167,10 @@ echo "<ul class='yp-editor-list'>
 					'Adds an animation to an element.'
 				)."
 				
+				<div class='option-group-class'>
 				".yp_get_select_markup(
 					'animation-play',
-					'Condition',
+					'Trigger',
 					array(
 						'yp_onscreen' => 'onScreen',
 						'yp_hover' => 'Hover',
@@ -1204,7 +1183,7 @@ echo "<ul class='yp-editor-list'>
 				
 				".yp_get_select_markup(
 					'animation-iteration-count',
-					'Animation Iteration',
+					'Iteration',
 					array(
 						'1' => '1',
 						'2' => '2',
@@ -1216,27 +1195,28 @@ echo "<ul class='yp-editor-list'>
 					'',
 					'Specifies the number of times an animation should be played.'
 				)."
+				</div>
 
 				".yp_get_slider_markup(
 					'animation-duration',
-					'Animation Duration',
+					'Duration',
 					'',
-					2,        // decimals
-					'1,10',   // px value
-					'1,10',   // percentage value
-					'1,10',   // Em/ms value
+					0.01,        // steps
+					'0,3',   // px value
+					'0,3',   // percentage value
+					'0,3',   // Em/ms value
 					'Defines how long an animation should take to complete one cycle.',
 					's,ms'
 				)."
 
 				".yp_get_slider_markup(
 					'animation-delay',
-					'Animation Delay',
+					'Delay',
 					'',
-					2,        // decimals
-					'0,10',   // px value
-					'0,10',  // percentage value
-					'0,10',     // Em/ms value
+					0.01,        // steps
+					'0,3',   // px value
+					'0,3',  // percentage value
+					'0,3',     // Em/ms value
 					'Specifies a delay for the start of an animation.',
 					's,ms'
 				)."
@@ -1258,8 +1238,19 @@ echo "<ul class='yp-editor-list'>
 		</li>
 		
 		<li class='box-shadow-option'>
-			<h3>Box Shadow ".$arrow_icon."</h3>
+			<h3>Box Shadow</h3>
 			<div class='yp-this-content'>
+
+				".yp_get_radio_markup(
+					'box-shadow-inset',
+					'Position',
+					array(
+						'no' => 'outside',
+						'inset' => 'inside'
+					),
+					false,
+					'Defines whether the shadow is inside or outside.'
+				)."
 			
 				".yp_get_color_markup(
 					'box-shadow-color',
@@ -1271,159 +1262,186 @@ echo "<ul class='yp-editor-list'>
 					'box-shadow-blur-radius',
 					'Blur Radius',
 					'',
-					0,        	// decimals
+					1,        	// steps
 					'0,50',   // px value
 					'0,50',  // percentage value
 					'0,50',     // Em value
-					'Sets blur radius of the shadow.',
-					'px,%,em,vw,vh'
+					'Sets blur radius of the shadow.'
 				)."
 				
 				".yp_get_slider_markup(
 					'box-shadow-spread',
 					'Spread',
 					'',
-					0,        	// decimals
+					1,        	// steps
 					'-50,100',   // px value
 					'-50,100',  // percentage value
 					'-50,100',     // Em value
-					'Set size of the shadow.',
-					'px,%,em,vw,vh'
+					'Set size of the shadow.'
 				)."
-
-				".yp_get_radio_markup(
-					'box-shadow-inset',
-					'Position',
-					array(
-						'no' => 'Outer',
-						'inset' => 'Inner'
-					),
-					false,
-					'Defines whether the shadow is inside or outside.'
-				)."		
 
 				".yp_get_slider_markup(
 					'box-shadow-horizontal',
 					'Horizontal Length',
 					'',
-					0,        // decimals
+					1,        // steps
 					'-50,50',   // px value
 					'-50,50',  // percentage value
 					'-50,50',     // Em value
-					'Sets horizontal length of the shadow.',
-					'px,%,em,vw,vh'
+					'Sets horizontal length of the shadow.'
 				)."
 				
 				".yp_get_slider_markup(
 					'box-shadow-vertical',
 					'Vertical Length',
 					'',
-					0,        	// decimals
+					1,        	// steps
 					'-50,50',   // px value
 					'-50,50',  // percentage value
 					'-50,50',     // Em value
-					'Sets vertical length of the shadow.',
-					'px,%,em,vw,vh'
+					'Sets vertical length of the shadow.'
 				)."
 
 			</div>
 		</li>
 		
 		<li class='extra-option'>
-			<h3>Extra ".$arrow_icon."</h3>
+			<h3>Extra</h3>
 			<div class='yp-this-content'>";
 
-				// Transform CSS Filter
+
+				// Transition CSS Filter
+			    $transition_status = apply_filters( 'yp_property__transition', TRUE);
+
+			    // Transition is valid
+			    if($transition_status){
+
+				    echo "<a class='yp-advanced-link yp-transition-link'>Transition</a>
+					<div class='yp-advanced-option'>
+
+					".yp_get_select_markup(
+						'transition-property',
+						'Type',
+						'transition-properties.json',
+						"",
+						'Specifies the name of the CSS property the transition effect is for (the transition effect will start when the specified CSS property changes).'
+					)."
+
+					".yp_get_slider_markup(
+						'transition-duration',
+						'Duration',
+						'',
+						0.01,        // steps
+						'0,2',   // px value
+						'0,2',   // percentage value
+						'0,2',   // Em/ms value
+						'Specifies how many seconds (s) or milliseconds (ms) a transition effect takes to complete.',
+						's,ms'
+					)."
+
+					".yp_get_select_markup(
+						'transition-timing-function',
+						'Easing',
+						array(
+							'ease' => 'ease',
+							'linear' => 'linear',
+							'ease-in' => 'ease-in',
+							'ease-out' => 'ease-out',
+							'ease-in-out' => 'ease-in-out'							
+						),
+						"",
+						'Specifies the speed curve of the transition effect.'
+					)."
+
+					</div>";
+
+				}
+
+
+				// Filter CSS Filter
 			    $filter_status = apply_filters( 'yp_property__filter', TRUE);
 
-			    // Transform is valid
+			    // Filter is valid
 			    if($filter_status){
 
-				    echo "<a class='yp-advanced-link yp-top yp-special-css-link yp-filter-link'>Filters</a>
-					<div class='yp-advanced-option yp-special-css-area yp-filter-area'>
+				    echo "<a class='yp-advanced-link yp-filter-link'>Filters</a>
+					<div class='yp-advanced-option'>
 
 					".yp_get_slider_markup(
 						'blur-filter',
 						'Blur',
 						'',
-						2,        // decimals
+						0.01,        // steps
 						'0,10',   // px value
 						'0,10',  // percentage value
 						'0,10',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 					
 					".yp_get_slider_markup(
 						'brightness-filter',
 						'Brightness',
 						'',
-						2,        // decimals
+						0.01,        // steps
 						'0,10',   // px value
 						'0,10',  // percentage value
 						'0,10',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 					
 					".yp_get_slider_markup(
 						'grayscale-filter',
 						'Grayscale',
 						'',
-						2,        // decimals
+						0.01,        // steps
 						'0,1',   // px value
 						'0,1',  // percentage value
 						'0,1',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 					
 					".yp_get_slider_markup(
 						'contrast-filter',
 						'Contrast',
 						'',
-						2,        // decimals
+						0.01,        // steps
 						'0,10',   // px value
 						'0,10',  // percentage value
 						'0,10',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 					
 					".yp_get_slider_markup(
 						'hue-rotate-filter',
 						'Hue Rotate',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,360',   // px value
 						'0,360',  // percentage value
 						'0,360',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 					
 					".yp_get_slider_markup(
 						'saturate-filter',
 						'Saturate',
 						'',
-						2,        // decimals
+						0.01,        // steps
 						'0,10',   // px value
 						'0,10',  // percentage value
 						'0,10',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 					
 					".yp_get_slider_markup(
 						'sepia-filter',
 						'Sepia',
 						'',
-						2,        // decimals
+						0.01,        // steps
 						'0,1',   // px value
 						'0,1',  // percentage value
 						'0,1',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 
 					</div>";
@@ -1436,126 +1454,116 @@ echo "<ul class='yp-editor-list'>
 			    // Transform is valid
 			    if($transform_status){
 
-				    echo "<a class='yp-advanced-link yp-top yp-special-css-link yp-transform-link'>Transforms</a>
-					<div class='yp-advanced-option yp-special-css-area yp-transform-area'>
+				    echo "<a class='yp-advanced-link yp-transform-link'>Transforms</a>
+					<div class='yp-advanced-option'>
 					".yp_get_slider_markup(
 						'scale-transform',
 						'Scale',
 						'',
-						2,        // decimals
+						0.01,        // steps
 						'0,5',   // px value
 						'0,5',  // percentage value
 						'0,5',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 					
 					".yp_get_slider_markup(
 						'rotate-transform',
 						'Rotate',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,360',   // px value
 						'0,360',  // percentage value
 						'0,360',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 
 					".yp_get_slider_markup(
 						'rotatex-transform',
 						'Rotate X',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,360',   // px value
 						'0,360',  // percentage value
 						'0,360',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 
 					".yp_get_slider_markup(
 						'rotatey-transform',
 						'Rotate Y',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,360',   // px value
 						'0,360',  // percentage value
 						'0,360',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 
 					".yp_get_slider_markup(
 						'rotatez-transform',
 						'Rotate Z',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,360',   // px value
 						'0,360',  // percentage value
 						'0,360',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 					
 					".yp_get_slider_markup(
 						'translate-x-transform',
 						'Translate X',
 						'',
-						0,        // decimals
+						1,        // steps
 						'-50,50',   // px value
 						'-50,50',  // percentage value
 						'-50,50',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 					
 					".yp_get_slider_markup(
 						'translate-y-transform',
 						'Translate Y',
 						'',
-						0,        // decimals
+						1,        // steps
 						'-50,50',   // px value
 						'-50,50',  // percentage value
 						'-50,50',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 					
 					".yp_get_slider_markup(
 						'skew-x-transform',
 						'Skew X',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,360',   // px value
 						'0,360',  // percentage value
 						'0,360',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 					
 					".yp_get_slider_markup(
 						'skew-y-transform',
 						'skew Y',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,360',   // px value
 						'0,360',  // percentage value
 						'0,360',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 
 					".yp_get_slider_markup(
 						'perspective',
 						'Perspective',
 						'',
-						0,        // decimals
+						1,        // steps
 						'0,1000',   // px value
 						'0,100',  // percentage value
 						'0,62',     // Em value
-						"",
-						'px,%,em,vw,vh'
+						""
 					)."
 
 					</div>";
@@ -1567,12 +1575,22 @@ echo "<ul class='yp-editor-list'>
 					'opacity',
 					'Opacity',
 					'',
-					2,        // decimals
+					0.01,       // steps
 					'0,1',   // px value
 					'0,1',  // percentage value
 					'0,1',     // Em value
-					'Sets the opacity level for an element.',
-					'px,%,em,vw,vh'
+					'Sets the opacity level for an element.'
+				)."
+
+				".yp_get_radio_markup(
+					'visibility',
+					'Visibility',
+					array(
+						'visible' => '<span class="dashicons dashicons-visibility"></span>',
+						'hidden' => '<span class="dashicons dashicons-hidden"></span>'
+					),
+					"",
+					'Specifies whether or not an element is visible.'
 				)."
 
 				".yp_get_select_markup(
@@ -1593,6 +1611,7 @@ echo "<ul class='yp-editor-list'>
 					'Specifies the type of box used for an element.'
 				)."
 
+				<div class='option-group-class'>
 				".yp_get_select_markup(
 					'cursor',
 					'Cursor',
@@ -1616,7 +1635,20 @@ echo "<ul class='yp-editor-list'>
 					"",
 					'Specifies the type of cursor to be displayed when pointing on an element.'
 				)."
-				
+
+				".yp_get_radio_markup(
+					'pointer-events',
+					'Pointer Events',
+					array(
+						'auto' => 'auto',
+						'none' => 'none'
+					),
+					"",
+					'Specifies under what circumstances (if any) a particular graphic element can become the target of mouse events.'
+				)."
+				</div>
+
+				<div class='option-group-class'>
 				".yp_get_radio_markup(
 					'float',
 					'Float',
@@ -1634,43 +1666,19 @@ echo "<ul class='yp-editor-list'>
 					'Clear',
 					array(
 						'none' => 'none',
-						'left' => 'left',
-						'right' => 'right',
 						'both' => 'both'
 					),
 					"",
 					'Specifies what elements can float beside the cleared element and on which side.'
 				)."
-
-				".yp_get_radio_markup(
-					'visibility',
-					'Visibility',
-					array(
-						'visible' => 'visible',
-						'hidden' => 'hidden'
-					),
-					"",
-					'Specifies whether or not an element is visible.'
-				)."
-
-
-				".yp_get_radio_markup(
-					'pointer-events',
-					'Pointer Events',
-					array(
-						'auto' => 'auto',
-						'none' => 'none'
-					),
-					"",
-					'Specifies under what circumstances (if any) a particular graphic element can become the target of mouse events.'
-				)."
+				</div>
 
 				".yp_get_radio_markup(
 					'direction',
 					'Direction',
 					array(
-						'ltr' => 'ltr',
-						'rtl' => 'rtl'
+						'ltr' => '<span class="dashicons dashicons-editor-ltr"></span>',
+						'rtl' => '<span class="dashicons dashicons-editor-rtl"></span>'
 					),
 					"",
 					'Specifies the text direction/writing direction within a block-level element.'
@@ -1678,7 +1686,7 @@ echo "<ul class='yp-editor-list'>
 				
 				".yp_get_radio_markup(
 					'overflow-x',
-					'Overflow X',
+					'Overflow Horizontal',
 					array(
 						'visible' => 'visible',
 						'hidden' => 'hidden',
@@ -1691,7 +1699,7 @@ echo "<ul class='yp-editor-list'>
 				
 				".yp_get_radio_markup(
 					'overflow-y',
-					'Overflow Y',
+					'Overflow Vertical',
 					array(
 						'visible' => 'visible',
 						'hidden' => 'hidden',

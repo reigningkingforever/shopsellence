@@ -86,8 +86,8 @@ if(defined("YP_DEMO_MODE") == false){
 		    top: 0;
 		    left: 0;
 		    position: fixed;
-		    background-color: #F1F1F1;
-		    z-index: 999999999;
+		    background-color: #f4f4f4;
+		    z-index: 2147483646;
 		}
 
 		#loader{
@@ -102,7 +102,7 @@ if(defined("YP_DEMO_MODE") == false){
 		}
 
 		#loader i{
-			background-color: #7EA057;
+			background-color: #1592E6;
 			width: 10%;
 			position: absolute;
 			height: 4px;
@@ -140,7 +140,7 @@ if(defined("YP_DEMO_MODE") == false){
 </head><?php
 
 	// Default Classes
-	$classes[] = 'yp-yellow-pencil yp-metric-disable yp-body-selector-mode-active';
+	$classes[] = 'yp-yellow-pencil yp-metric-disable yp-flexible-inspector-active';
 
 	// DEMO MODE
 	if(current_user_can("edit_theme_options") == false){
@@ -148,7 +148,7 @@ if(defined("YP_DEMO_MODE") == false){
 			$classes[] = 'yp-yellow-pencil-demo-mode';
 		}
 	}
-
+	
 	// WTFV
 	if(!defined('WTFV')){
 		$classes[] = 'wtfv';
@@ -180,7 +180,7 @@ if(defined("YP_DEMO_MODE") == false){
 
 		// Fix frameLink
 		if(empty($frameLink)){
-			$frameLink = trim( strip_tags( urldecode( $_GET['href']) ) );
+			$frameLink = trim( wp_strip_all_tags( urldecode( $_GET['href']) ) );
 		}
 
 		// Empty Variables
@@ -190,8 +190,8 @@ if(defined("YP_DEMO_MODE") == false){
     	$rand = rand(136900, 963100);
 
 		// Only normal mode
-		$mode = trim( strip_tags( $_GET['yp_mode'] ) );
-		$type = trim( strip_tags( $_GET['yp_page_type'] ) );
+		$mode = trim( wp_strip_all_tags( $_GET['yp_mode'] ) );
+		$type = trim( wp_strip_all_tags( $_GET['yp_page_type'] ) );
 		$id = intval($_GET['yp_page_id']);
 
 
@@ -236,10 +236,11 @@ if(defined("YP_DEMO_MODE") == false){
 
 	<iframe data-page-href="<?php echo yp_urlencode(esc_url($_GET['href'])); ?>" data-page-id="<?php echo esc_attr($_GET['yp_page_id']); ?>" data-page-type="<?php echo esc_attr($_GET['yp_page_type']); ?>" data-page-visitor="<?php echo isset($_GET['yp_out']); ?>" id="yp-customizing-type-frame" style="border-width: 0px;display:none;position:fixed;width:100%;height:100%;top:0;left:0;z-index:2147483645;" data-src="<?php echo esc_attr($customize_type_link); ?>" tabindex="-1"></iframe>
 
-	<div id="parent-bar"><span>Select an element to show element tree.</span><ul></ul></div>
+	<div id="editor-element-tree"><span>Select an element to show element tree.</span><ul></ul></div>
 	
 	<div id="visual-css-view">
 		<div class="css-view-top">
+			<span class="dashicons dashicons-filter"></span>
 			<input id="visual-rule-filter" placeholder="filter.." type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
 			<div class="visual-manager-close"></div>
 		</div>
@@ -289,72 +290,74 @@ if(defined("YP_DEMO_MODE") == false){
 	</div>
 
 	<div class="responsive-right-handle"></div>
+	<span class="responsive-add-breakpoint"><span class="dashicons dashicons-plus"></span></span>
 
-	<div class="responsive-size-text default-responsive-text"><a href="https://yellowpencil.waspthemes.com/docs/responsive-tool/" target="_blank" class="support-icon" data-toggle="tooltip" data-placement="right" title="Click here to learn how the responsive tool works.">?</a> Affects <span class='device-size'></span>px and <span class='media-control' data-code='max-width'>below</span> screen sizes. <span class="device-name"></span></div>
-	<div class="responsive-size-text"><a href="https://yellowpencil.waspthemes.com/docs/responsive-tool/" target="_blank" class="support-icon" data-toggle="tooltip" data-placement="right" title="Click here to learn how the responsive tool works.">?</a> Customizing <span class='property-size-text'></span>.</div>
+	<div class="responsive-size-text">Affects <span class='device-size'></span> pixels and <span class='media-control' data-code='max-width'>below</span> screen sizes. <span class="device-name"></span></div>
 
 	<?php yp_yellow_penci_bar(); ?>
 	
-	<div class="top-area-btn-group">
-		<a target="blank" class="yellow-pencil-logo" href="https://yellowpencil.waspthemes.com/" tabindex="-1"></a>
-		<div class="top-area-btn cursor-main-btn yp-selector-mode active"><span class="no-aiming-icon"></span><span class="aiming-icon"></span><span class="sharp-selector-icon"></span></div>
-		<div data-toggle='tooltip-bar' data-placement='right' title='Find An Element <span class="yp-s-shortcut">(F)</span><span class="yp-tooltip-shortcut">Find elements by CSS selector.</span>' class="top-area-btn yp-search-btn active"><span class="search-selector-icon"></span></div>
-		<?php if($filter_css_editor){ ?>
-		<div data-toggle='tooltip-bar' data-placement='right' title='CSS Editor <span class="yp-s-shortcut">(É)</span><span class="yp-tooltip-shortcut">Edit style codes.</span>' class="top-area-btn css-editor-btn"><span class="css-editor-icon"></span></div>
-		<?php } ?>
-		<div data-toggle='tooltip-bar' data-placement='right' title='Responsive Mode <span class="yp-s-shortcut">(R)</span><span class="yp-tooltip-shortcut">Edit for specific screen sizes.</span>' class="top-area-btn yp-responsive-btn active"><span class="responsive-icon"></span></div>
-		<div data-toggle='tooltip-bar' data-placement='right' title='Measuring Tool <span class="yp-s-shortcut">(M)</span><span class="yp-tooltip-shortcut">Measure elements.</span>' class="top-area-btn yp-ruler-btn"><span class="ruler-icon"></span></div>
-		<div data-toggle='tooltip-bar' data-placement='right' title='Wireframe <span class="yp-s-shortcut">(W)</span><span class="yp-tooltip-shortcut">Work on the layout easily.</span>' class="top-area-btn yp-wireframe-btn"><span class="wireframe-icon"></span></div>
-		<div data-toggle='tooltip-bar' data-placement='right' title='Design Information <span class="yp-s-shortcut">(D)</span><span class="yp-tooltip-shortcut">Typography, sizes, and others.</span>' class="top-area-btn info-btn"><span class="design-information-icon"></span></div>
+	<div id="left-bar">
+		<div class="editor-leftbar">
+			<a target="blank" class="yellow-pencil-logo" href="https://yellowpencil.waspthemes.com/" tabindex="-1"></a>
+			<div data-toggle='tooltip-bar' data-placement='right' title='Element Inspector <span class="yp-s-shortcut">(V)</span>' class="leftbar-button cursor-main-btn yp-selector-mode active"><span class="no-aiming-icon"></span><span class="aiming-icon"></span><span class="sharp-selector-icon"></span></div>
+			<div data-toggle='tooltip-bar' data-placement='right' title='Find An Element <span class="yp-s-shortcut">(F)</span><span class="yp-tooltip-shortcut">Find elements by CSS selector.</span>' class="leftbar-button yp-search-btn active"><span class="search-selector-icon"></span></div>
+			<?php if($filter_css_editor){ ?>
+			<div data-toggle='tooltip-bar' data-placement='right' title='CSS Editor <span class="yp-s-shortcut">(É)</span><span class="yp-tooltip-shortcut">Edit style codes.</span>' class="leftbar-button css-editor-btn"><span class="css-editor-icon"></span></div>
+			<?php } ?>
+			<div data-toggle='tooltip-bar' data-placement='right' title='Responsive Mode <span class="yp-s-shortcut">(R)</span><span class="yp-tooltip-shortcut">Edit for specific screen sizes.</span>' class="leftbar-button yp-responsive-btn active"><span class="responsive-icon"></span></div>
+			<div data-toggle='tooltip-bar' data-placement='right' title='Measuring Tool <span class="yp-s-shortcut">(M)</span><span class="yp-tooltip-shortcut">Measure elements.</span>' class="leftbar-button yp-ruler-btn"><span class="ruler-icon"></span></div>
+			<div data-toggle='tooltip-bar' data-placement='right' title='Wireframe <span class="yp-s-shortcut">(W)</span><span class="yp-tooltip-shortcut">Work on the layout easily.</span>' class="leftbar-button yp-wireframe-btn"><span class="wireframe-icon"></span></div>
+			<div data-toggle='tooltip-bar' data-placement='right' title='Design Information <span class="yp-s-shortcut">(D)</span><span class="yp-tooltip-shortcut">Typography, sizes, and others.</span>' class="leftbar-button info-btn"><span class="design-information-icon"></span></div>
 
-		<?php if($filter_animation_tools){ ?>
-		<div data-toggle='tooltip-bar' data-placement='right' title='Animation Manager <span class="yp-tooltip-shortcut">Manage animations visually.</span>' class="top-area-btn animation-manager-btn"><span class="animation-manager-icon"></span></div>
-		<?php } ?>
+			<?php if($filter_animation_tools){ ?>
+			<div data-toggle='tooltip-bar' data-placement='right' title='Animation Manager <span class="yp-tooltip-shortcut">Manage animations visually.</span>' class="leftbar-button animation-manager-btn"><span class="animation-manager-icon"></span></div>
+			<?php } ?>
 
-		<div data-toggle='tooltip-bar' data-placement='right' title='Undo <span class="yp-tooltip-shortcut">CTRL + Z</span>' class="top-area-btn top-area-center undo-btn"><span class="undo-icon"></span></div>
-		<div data-toggle='tooltip-bar' data-placement='right' title='Redo <span class="yp-tooltip-shortcut">CTRL + Y</span>' class="top-area-btn redo-btn"><span class="redo-icon"></span></div>
+			<div data-toggle='tooltip-bar' data-placement='right' title='Undo <span class="yp-tooltip-shortcut">CMD + Z</span>' class="leftbar-button top-area-center undo-btn"><span class="undo-icon"></span></div>
+			<div data-toggle='tooltip-bar' data-placement='right' title='Redo <span class="yp-tooltip-shortcut">CMD + Y</span>' class="leftbar-button redo-btn"><span class="redo-icon"></span></div>
 
-		<?php if($filter_live_settings_menu){ ?>
-		<div class="top-area-btn left-menu-btn"><span class="dashicons dashicons-admin-generic"></span></div>
-		<?php } ?>
+			<?php if($filter_live_settings_menu){ ?>
+			<div class="leftbar-button left-menu-btn"><span class="dashicons dashicons-admin-generic"></span></div>
+			<?php } ?>
 
-		<div class="left-menu-sublist inspector-sublist">
-			<ul>
-				<li class="inspector-sublist-cursor" data-cursor-action="cursor">Cursor</li>
-				<li class="inspector-sublist-default active" data-cursor-action="default">Flexible Inspector</li>
-				<li class="inspector-sublist-single" data-cursor-action="single">Single Inspector</li>
-			</ul>
+			<div class="left-menu-sublist inspector-sublist">
+				<ul>
+					<li class="inspector-sublist-cursor" data-cursor-action="cursor">Cursor <i>(navigate)</i></li>
+					<li class="inspector-sublist-default active" data-cursor-action="default">Flexible Inspector</li>
+					<li class="inspector-sublist-single" data-cursor-action="single">Single Inspector</li>
+				</ul>
+			</div>
+
+			<?php if($filter_live_settings_menu){ ?>
+			<div class="left-menu-sublist interface-settings">
+				<ul>
+
+					<li class="fixed_right_panel_checkbox">Fixed Right Panel <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
+
+					<li class="show_parent_tree_checkbox">Show Parent Tree <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
+
+					<li class="hide_premium_options_checkbox yp-lite" data-toggle='tooltip-bar' data-placement='right' title='<span class="yp-tooltip-shortcut2">Hides all premium features on the free version.</span>'>Hide Pro Features <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
+
+					<li class="show_margin_padding_on_hover_checkbox" data-toggle='tooltip-bar' data-placement='right' title='<span class="yp-tooltip-shortcut2">Shows margin and padding of the elements on mouseover.</span>'>Show Margin &amp; Padding On Hover <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
+
+					<li class="left-sublist-border"></li>
+
+					<li class="smart_responsive_technology_checkbox" data-toggle='tooltip-bar' data-placement='right' title='<span class="yp-tooltip-shortcut2">This feature automatically detects the styles that can harm the responsive layout and limits them with special screen sizes.</span>'>Smart Responsive Technology <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
+
+					<li class="append_auto_comments_checkbox" data-toggle='tooltip-bar' data-placement='right' title='<span class="yp-tooltip-shortcut2">Appends new selectors to the editor with CSS comments.</span>'>Auto CSS Comments <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
+
+					<li class="smart_important_tag_checkbox" data-toggle='tooltip-bar' data-placement='right' title='<span class="yp-tooltip-shortcut2">Adds the important tag to CSS rules if required.</span>'>Smart Important Tag <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
+
+					<li class="high_performance_checkbox" data-toggle='tooltip-bar' data-placement='right' title='<span class="yp-tooltip-shortcut2">Enhances editor performance by use of a simple selector before selecting the element but as a result, there is no difference in output CSS code.</span>'>High Performance <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
+
+					<li class="left-sublist-border manage-customizations-border"></li>
+
+					<li class="basic manage-customizations-link"><a href="<?php echo admin_url("admin.php?page=yellow-pencil-changes"); ?>" target="_blank">Manage Customizations <span class="dashicons dashicons-external"></span></a></li>
+
+				</ul>
+			</div>
+			<?php } ?>
 		</div>
-
-		<?php if($filter_live_settings_menu){ ?>
-		<div class="left-menu-sublist interface-settings">
-			<ul>
-
-				<li class="fixed_right_panel_checkbox">Fixed Right Panel <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
-
-				<li class="show_parent_tree_checkbox">Show Parent Tree <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
-
-				<li class="hide_premium_options_checkbox yp-lite" data-toggle='tooltip-bar' data-placement='right' title='<span class="yp-tooltip-shortcut2">Hides all preimum features on Lite version.</span>'>Hide Pro Features <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
-
-				<li class="show_margin_padding_on_hover_checkbox" data-toggle='tooltip-bar' data-placement='right' title='<span class="yp-tooltip-shortcut2">Shows margin and padding of the elements on mouseover.</span>'>Show Margin &amp; Padding On Hover <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
-
-				<li class="left-sublist-border"></li>
-
-				<li class="smart_responsive_technology_checkbox" data-toggle='tooltip-bar' data-placement='right' title='<span class="yp-tooltip-shortcut2">This feature automatically detects the styles that can harm the responsive layout and limits them with special screen sizes.</span>'>Smart Responsive Technology <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
-
-				<li class="append_auto_comments_checkbox" data-toggle='tooltip-bar' data-placement='right' title='<span class="yp-tooltip-shortcut2">Appends new selectors to the editor with CSS comments.</span>'>Auto CSS Comments <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
-
-				<li class="smart_important_tag_checkbox" data-toggle='tooltip-bar' data-placement='right' title='<span class="yp-tooltip-shortcut2">Adds the important tag to CSS rules if required.</span>'>Smart Important Tag <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
-
-				<li class="high_performance_checkbox" data-toggle='tooltip-bar' data-placement='right' title='<span class="yp-tooltip-shortcut2">Enhances editor performance by use of a simple selector before selecting the element but as a result, there is no difference in output CSS code.</span>'>High Performance <label class="interface-settings-switch"><input type="checkbox"><span class="interface-settings-slider"></span></label></li>
-
-				<li class="left-sublist-border manage-customizations-border"></li>
-
-				<li class="basic manage-customizations-link"><a href="<?php echo admin_url("admin.php?page=yellow-pencil-changes"); ?>" target="_blank">Manage Customizations <span class="dashicons dashicons-external"></span></a></li>
-
-			</ul>
-		</div>
-		<?php } ?>
 	</div>
 
 	<div class="yp-right-panel-placeholder"></div>
@@ -426,6 +429,12 @@ if(defined("YP_DEMO_MODE") == false){
 					<div class="info-element-classes-section">
 						<h3>Classes</h3>
 						<ul class="info-element-class-list">
+						</ul>
+					</div>
+
+					<div class="info-element-accessibility-section">
+						<h3>Accessibility</h3>
+						<ul class="info-element-accessibility">
 						</ul>
 					</div>
 
@@ -550,35 +559,26 @@ if(defined("YP_DEMO_MODE") == false){
 		<div id="cssData"></div>
 		<div id="cssEditorBar">
 			<span class="dashicons yp-css-close-btn dashicons-no-alt" title='Hide (ESC)'></span>
-			<span class="editor-tabs single-tab" title="The styles applied to the current page." data-type-value="single">Single<i></i></span>
-			<span class="editor-tabs template-tab" title="The styles applied to all pages of the current post type." data-type-value="template">Template<i></i></span>
-			<span class="editor-tabs global-tab" title="The styles applied to the entire website." data-type-value="global">Global<i></i></span>
+			<span class="editor-tabs single-tab" data-type-value="single">Single<i></i></span>
+			<span class="editor-tabs template-tab" data-type-value="template">Template<i></i></span>
+			<span class="editor-tabs global-tab" data-type-value="global">Global<i></i></span>
 			<div class="editor-tab-border"></div>
+			<span class="yp-css-editor-detach dashicons dashicons-external"></span>
 		</div>
 		<div class="unvalid-css-error">Error: <span></span></div>
 	</div>
 
 	<div class="yp-popup-background"></div>
 	<div class="yp-info-modal">
-		<div class="yp-info-modal-top"></div>
 		<div class="yp-info-modal-top-inner">
-			<h2>Changes Not Saved. Upgrade To Pro!</h2>
-			<p>You are using some premium properties. Upgrade to Pro or disable premium properties to save changes.</p>
+			<h2>Changes Are Not Saved. Upgrade To Pro!</h2>
+			<p>You are using some premium features. Upgrade to Pro or disable premium features to save changes.</p>
 		</div>
-		<ul>
-			<li>Access 800+ Quality Fonts</li>
-			<li>Unlock all properties and tools</li>
-			<li>Stock images & background patterns</li>
-			<li>Visual Element Resizing</li>
-			<li>Gradient backgrounds & color palettes</li>
-			<li>Premium customer support</li>
-			<li>Lifetime license & free updates</li>
-		</ul>
 
 		<div class="yp-action-area">
-			<a class="yp-info-modal-close">No Thanks</a>
-			<a class="yp-buy-link" target="_blank" href="https://waspthemes.com/yellow-pencil/buy">Go Pro</a>
-			<p class="yp-info-last-note">Money back guarantee. You can request a refund at any time!</p>
+			<p class="yp-info-unlock-p">Unlock all premium features now!</p>
+			<a class="yp-info-modal-close">No, Thanks</a><a class="yp-buy-link" target="_blank" href="https://waspthemes.com/yellow-pencil/buy">Upgrade Now</a>
+			<p class="yp-info-last-note">30 Days Money-back Guarantee &mdash; Lifetime License &mdash; Premium Customer Support</p>
 		</div>
 		<a class='activate-pro' href="<?php echo admin_url('admin.php?page=yellow-pencil-license'); ?>" target="_blank">Already have a license?</a>
 	</div>
@@ -626,7 +626,7 @@ if(defined("YP_DEMO_MODE") == false){
         }
 
 		// All plugin element list
-        window.plugin_classes_list = 'yellow-pencil-canvas|yp-css-editor-disable|yellow-pencil-focus-canvas|yellow-pencil-extra-canvas|yellow-pencil-other-canvas|yp-high-performance|yp-no-wireframe|yp-element-not-visible|yp-iframe-placeholder|yp-element-picker-active|yp-data-updated|yp-animate-data|yp-inline-data|yp-animating|yp-scene-1|yp-sharp-selector-mode-active|yp-scene-2|yp-scene-3|yp-scene-4|yp-scene-5|yp-scene-6|yp-anim-creator|data-anim-scene|yp-animate-test-playing|ui-draggable-handle|yp-yellow-pencil-demo-mode|yp-yellow-pencil-loaded|yp-element-resized|resize-time-delay|yp_onscreen|yp_hover|yp_click|yp_focus|yp-recent-hover-element|yp-selected-others|yp-multiple-selected|yp-demo-link|yp-live-editor-link|yp-yellow-pencil|yp-content-selected|yp-hide-borders-now|ui-draggable|yp-selector-editor-active|yp-responsive-device-mode|yp-metric-disable|yp-css-editor-active|wtfv|yp-clean-look|yp-has-transform|yp-will-selected|yp-selected|yp-element-resizing|yp-element-resizing-width-right|yp-element-resizing-height-bottom|context-menu-active|yp-selectors-hide|yp-control-key-down|yp-selected-others-multiple-box|yp-iframe-mouseleave|yp-selected-boxed-top|yp-selected-boxed-bottom|yp-selected-boxed-left|yp-selected-boxed-right|yp-selected-boxed-margin-left|yp-zero-margin-w|yp-animate-manager-active|yp-wireframe-mode|yp-selector-hover|yp-size-handle|ypdw|ypdh|yp-body-selector-mode-active|yp-selected-boxed-margin-top|yp-selected-boxed-margin-bottom|yp-selected-boxed-margin-right|yp-selected-boxed-padding-left|yp-selected-boxed-padding-top|yp-selected-boxed-padding-bottom|yp-selected-boxed-padding-right|yp-selected-tooltip|yp-edit-tooltip|yp-edit-menu|yp-resorted|yp-full-width-selected|yp-zero-margin-h|yp-tooltip-small|yp-force-popup';
+        window.plugin_classes_list = 'yellow-pencil-canvas|yp-css-editor-disable|yellow-pencil-focus-canvas|yellow-pencil-extra-canvas|yellow-pencil-other-canvas|yp-high-performance|yp-no-wireframe|yp-element-not-visible|yp-iframe-placeholder|yp-data-updated|yp-animate-data|yp-inline-data|yp-animating|yp-scene-1|yp-single-inspector-active|yp-scene-2|yp-scene-3|yp-scene-4|yp-scene-5|yp-scene-6|yp-anim-creator|data-anim-scene|yp-animate-test-playing|ui-draggable-handle|yp-yellow-pencil-demo-mode|yellow-pencil-ready|yp-element-resized|resize-time-delay|yp_onscreen|yp_hover|yp_click|yp_focus|yp-recent-hover-element|yp-selected-others|yp-multiple-selected|yp-demo-link|yp-live-editor-link|yp-yellow-pencil|yp-content-selected|yp-hide-borders-now|ui-draggable|yp-selector-editor-active|yp-responsive-device-mode|yp-metric-disable|yp-css-editor-active|wtfv|yp-clean-look|yp-has-transform|yp-will-selected|yp-selected|yp-element-resizing|yp-element-resizing-width-right|yp-element-resizing-height-bottom|context-menu-active|yp-selectors-hide|yp-control-key-down|yp-selected-others-multiple-box|yp-iframe-mouseleave|yp-selected-boxed-top|yp-selected-boxed-bottom|yp-selected-boxed-left|yp-selected-boxed-right|yp-selected-boxed-margin-left|yp-zero-margin-w|yp-animate-manager-active|yp-wireframe-mode|yp-selector-hover|yp-size-handle|ypdw|ypdh|yp-flexible-inspector-active|yp-selected-boxed-margin-top|yp-selected-boxed-margin-bottom|yp-selected-boxed-margin-right|yp-selected-boxed-padding-left|yp-selected-boxed-padding-top|yp-selected-boxed-padding-bottom|yp-selected-boxed-padding-right|yp-selected-tooltip|yp-edit-tooltip|yp-edit-menu|yp-resorted|yp-full-width-selected|yp-zero-margin-h|yp-tooltip-small|yp-force-popup|yp-styles-area|yellow-pencil-frame|yellow-pencil-animate|yp-draw-box|yp-selected-bottom|yp-fixed-tooltip|yp-fixed-edit-menu|yp-tooltip-bottom-outside|yp-bottom-outside-edit-menu';
 
         // Replace all parent ways
         for(var s = 0; s < 51; s++){
@@ -910,12 +910,12 @@ if(defined("YP_DEMO_MODE") == false){
 		            <?php if(isset($_GET["yp_load_popup"])){ ?>
 		            auto_load_popup();
 		            $("#yp-customizing-type-frame").on("load", function(){
-            			body.addClass("yp-yellow-pencil yp-yellow-pencil-loaded");
+            			body.addClass("yp-yellow-pencil yellow-pencil-ready");
 		            	$(".yp-iframe-loader").hide();
 		            });
 		            <?php }else{ ?>
 		            setTimeout(function(){
-            			body.addClass("yp-yellow-pencil yp-yellow-pencil-loaded");
+            			body.addClass("yp-yellow-pencil yellow-pencil-ready");
 		            	$(".yp-iframe-loader").fadeOut(300);
 		        	}, 100);
 		        	<?php } ?>

@@ -11,13 +11,13 @@
 	font-size: 15px;
 	font-weight: 600;
 	-webkit-transition: background 120ms ease;
-	-moz-transition: background 120ms ease;
-	-ms-transition: background 120ms ease;
 	-o-transition: background 120ms ease;
 	transition: background 120ms ease;
-	box-shadow: 0 0 0px 1px rgba(0,0,0,0.04) inset;
+	-webkit-box-shadow: 0 0 0px 1px rgba(0,0,0,0.04) inset;
+	        box-shadow: 0 0 0px 1px rgba(0,0,0,0.04) inset;
 	margin-top: 1px;
-	border-radius: 2px;
+	-webkit-border-radius: 2px;
+	        border-radius: 2px;
 }
 
 .yp-btn .dashicons{
@@ -73,7 +73,8 @@
 .yp-badge{
 	background-image:url(../images/logo-white.png) !important;
 	background-color:#F2C158;
-	background-size: 88px;
+	-webkit-background-size: 88px 88px;
+	        background-size: 88px;
 
 }
 

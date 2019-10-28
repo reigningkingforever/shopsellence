@@ -1,5 +1,5 @@
 === Visual CSS Style Editor ===
-Tags: css,style,customize,editor,custom,yellow pencil
+Tags: css, design, google fonts, editor, customize
 Requires at least: 4.0
 Tested up to: 5.2
 Stable tag: 5.2
@@ -46,10 +46,10 @@ The plugin provides you advanced tools and ready-to-use libraries for styling yo
 === Design Assets ===
 Reach many design assets with one click. Customize your website's design to fit your needs!
 
-- 800+ Font families *(pro version)*
+- 800+ Google fonts *(pro version)*
 - 300+ Background patterns *(pro version)*
 - Unsplash background stock images *(pro version)*
-- Trend color palettes *(pro version)*
+- Material and flat color palettes *(pro version)*
 - 50+ Animations *(pro version)*
 
 === CSS Properties: Text ===
@@ -90,6 +90,7 @@ Reach many design assets with one click. Customize your website's design to fit 
 - Flexbox
 - Animation
 - Box Shadow
+- Transition
 - Filter
 - Transform
 - Opacity
@@ -104,6 +105,9 @@ Reach many design assets with one click. Customize your website's design to fit 
 === Compatible with any theme & plugin ===
 This works seamlessly with almost any WordPress theme and plugin. You can use it for editing the pages that you created with the page builders.
 
+=== Compatible with All Page Builders ===
+The plugin allows you to customize the pages created with Gutenberg block editor, Elementor or another page builder. Re-design your website today.
+
 === How does this work? ===
 The plugin generates CSS codes like a professional web developer in the background while you are editing the web page visually.
 
@@ -112,7 +116,7 @@ The plugin doesn't modify any theme file, instead of it loads the generated CSS 
 === Premium features ===
 The following properties are available only in paid version;
 
-- Font Families
+- Font Families (Google fonts)
 - Font Color
 - Background Color
 - Background Image
@@ -165,6 +169,45 @@ Yes, In the WordPress Dashboard, go to Appearance > YellowPencil Editor. Select 
 
 
 == Changelog ==
+= 7.2.6 =
+- The license activation error fixed.
+
+= 7.2.5 =
+- The editor panel has been redesigned to improve the user experience.
+- Portable CSS editor.
+- New Color Picker.
+- Custom CSS variable bug fixed.
+- Live preview bug fixed on the login page.
+- Text-decoration bug fixed.
+- CSS position sticky bug fixed.
+- Performance Improvements for listing font families.
+- Fixed a conflict with ace.js on some servers.
+- Fixed the bug of reading the wrong data of line-height property.
+
+= 7.2.4 =
+- animation-events.js file converted to pure javascript from jQuery to run and load faster.
+- nth-child CSS selector conflict fixed.
+- Added bulk actions to "manage styles" page. You can easily manage the customizations now.
+- Fixed conflicts with PHP 7
+
+= 7.2.3 =
+- Breakpoint active problem fixed in the responsive tool.
+- "Breakpoints is not readable" problem fixed.
+
+= 7.2.2 =
+- We've added an option to the font-family property for include or not include the google font file to the website.
+- CSS Transition property.
+- Accessibility: gives detailed information about the element accessibility in the design information tool. The plugin is calculating the text contrast ratio with WCAG AA standards.
+- New Responsive Tool.
+- custom.css file moved to uploads folder.
+- CSS saving bug fixed.
+- Number slider updated.
+- Google fonts updated
+- animate.css updated
+- Auto media API improved.
+- Multiple element selection bugs fixed.
+- Many bugs fixed, and the plugin improved.
+
 = 7.2.1 =
 - Extra Security: Added nonce (token) for all action.
 

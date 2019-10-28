@@ -1,5 +1,5 @@
 ! function(t) {
-    "use strict";
+    "use strict"; 
     t(document).ready(function(){
         t(document).on("click", ".yp-btn", function() {
             if ("pending" == t("#hidden_post_status").val() || "private" == t("#hidden_post_status").val() || "draft" == t("#hidden_post_status").val() || "publish" == t("#hidden_post_status").val() || undefined == t("#hidden_post_status").val()) {

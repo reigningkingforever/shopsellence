@@ -2,8 +2,8 @@
 Contributors: ThemeGrill, shivapoudel
 Tags: social, media, icons, brands, widget, social networking, social media, social icon, social icons, social profile, social icon widget, shortcode
 Requires at least: 4.7
-Tested up to: 4.9
-Stable tag: 1.7.1
+Tested up to: 5.2.2
+Stable tag: 1.7.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -76,6 +76,9 @@ Yes you can! Join in on our [GitHub repository](https://github.com/themegrill/so
 4. Social Icons Admin Panel
 
 == Changelog ==
+
+= 1.7.2 - 20/06/2019 =
+* Feature - Add option to have the social links nofollow relation.
 
 = 1.7.0 - 09/01/2018 =
 * Fix - Support multiple social profile links.

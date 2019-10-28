@@ -4,6 +4,7 @@
 global $WOOF;
 $_REQUEST['additional_taxes'] = $additional_taxes;
 $_REQUEST['hide_terms_count_txt'] = 0;
+//***
 
 //***
 if (!function_exists('woof_draw_radio_childs'))
@@ -173,8 +174,6 @@ if (!function_exists('woof_draw_radio_childs'))
                     continue;
                 }
             }
-
-
 
             //excluding hidden terms
             if (in_array($term['term_id'], $hidden_terms))

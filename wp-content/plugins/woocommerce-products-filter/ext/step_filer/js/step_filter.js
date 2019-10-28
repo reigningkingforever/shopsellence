@@ -1,14 +1,16 @@
 var woof_step_autosubmit=0;
 var woof_step_pre_autosubmit={};
+
 function woof_step_filter_html_items(){
     var step_filter= jQuery('.woof_step');
-    
+
     if(step_filter.length){
         //woof_step_filter_check_items();
         var type =step_filter.data('filter_type');
         woof_step_filter_select_fix();
         
         if(type==2){
+            woof_submit_link_locked=false;
             woof_autosubmit=1;
             woof_ajax_redraw = 1;
         }
@@ -22,16 +24,13 @@ function woof_step_filter_html_items(){
         step_filter.slideDown('100');
 
         if(type==1){
-          //  var reset_btn=jQuery('.woof_step .woof_reset_search_form');
-          //  if(reset_btn.length){
-              //var btn = reset_btn.detach(); 
-             // jQuery('.woof_step_filter_prev').after(btn);
-           // }
+
             jQuery('.woof_step_filter_next').unbind('click');
             jQuery('.woof_step_filter_next').click(function(){
                 woof_submit_link_locked = false;
                 woof_ajax_redraw = 1;
                // woof_is_ajax = 1;    
+               
                 woof_submit_link(woof_get_submit_link());
                // check_next_prev_btn();
             });
@@ -52,6 +51,7 @@ function woof_step_filter_html_items(){
                 woof_ajax_redraw = 1;
                 //woof_is_ajax = 1;    
                 woof_submit_link(woof_get_submit_link());
+
                // check_next_prev_btn();
             });
         }
@@ -94,7 +94,7 @@ function woof_step_filter_select_fix(){
 }
 function check_next_prev_btn(){
 
-    var curr_el=jQuery('.woof_step_filter_current');
+    var curr_el=jQuery('.woof_step_filter_current:not(".woof_container.woof_turbo_hide")');
     jQuery('.woof_step .woof_container_inner input').on('ifChecked', function (event) {
         if(woof_step_filter_check_state(jQuery(this).parents(".woof_container")).has){
             jQuery('.woof_step_filter_next').prop( "disabled", false ); 
@@ -225,7 +225,7 @@ function check_next_prev_btn(){
         jQuery('.woof_step_filter_next').prop( "disabled", true );
         woof_autosubmit=1;
         woof_ajax_redraw = 1;
-
+        
         if(jQuery('.woof_step').data('autosubmit')){
             woof_ajax_redraw = 0; 
         }
@@ -245,9 +245,15 @@ function check_next_prev_btn(){
     if(!curr_el.length){       
         //jQuery('.woof_container.woof_step_hide').last().show();
         var prev_btn = jQuery('.woof_step .woof_step_filter_prev').clone();
-        prev_btn.prependTo('.woof_step .woof_submit_search_form_container');
-        
+        prev_btn.prependTo('.woof_step .woof_submit_search_form_container');        
         jQuery('.woof_step_next_back_btn').hide();
+            //turbo
+            if(typeof WoofTurboMode!='undefined'){
+               woof_step_autosubmit=1;
+                woof_step_filter_submit();        
+            }
+            //turbo     
+        
     }else{
         jQuery('.woof_step .woof .woof_submit_search_form_container').hide();
         jQuery('.woof_step_next_back_btn').show(); 
@@ -257,14 +263,22 @@ function check_next_prev_btn(){
 }
 
 function woof_step_filter_check_items(type){
-    var items=jQuery('.woof_step .woof .woof_container');
+    var items=jQuery('.woof_step .woof .woof_container:not(".woof_container.woof_turbo_hide")');
+    
     var woof_current_values_temp={};
     var hide=false;
     var first=0;
+
+    //turbo
+    if(typeof WoofTurboMode!='undefined'){
+       jQuery(items).removeClass('woof_step_filter_current');
+    }   
+    
     jQuery.each(items, function(i,item){
         if(type==1){
             jQuery(item).addClass('woof_step_hide');
         }else if(type==2){
+            
             if(i!=0 && hide){
                 jQuery(item).addClass('woof_step_hide');
             }else{
@@ -272,7 +286,8 @@ function woof_step_filter_check_items(type){
             }                       
         }
   
-        var stat = woof_step_filter_check_state(item);      
+        var stat = woof_step_filter_check_state(item);    
+
         if(!stat.has){
             hide=true;
             first++;
@@ -305,32 +320,52 @@ function woof_step_filter_check_items(type){
         }
 
         if(type==2){
+           
             if(jQuery('.woof_step_filter_current').next('.woof_submit_search_form_container').length){
-                //woof_ajax_redraw = 1;
-                 jQuery('.woof_step_filter_current').click(function(){
-
-                   woof_step_autosubmit=1;
-                 }); 
+                //woof_ajax_redraw = 1;                
+                jQuery('.woof_step_filter_current').click(function(){                   
+                    woof_step_autosubmit=1;
+                    woof_ajax_redraw = 0;
+                }); 
             }
+            //turbo
+            if(typeof WoofTurboMode!='undefined'){            
+                if(jQuery('.woof_step_filter_current').nextAll(".woof_container:not('.woof_container.woof_turbo_hide')").length==0){
+                   
+                    jQuery('.woof_step_filter_current').click(function(){                   
+                        woof_step_autosubmit=1;
+                        woof_ajax_redraw = 1;
+                        woof_step_filter_submit();
+                    }); 
+                }
+            }        
         }
 		
-		var curr_el = jQuery('.woof_step_filter_current');
-		if(jQuery(curr_el).length==0){	
-			if(jQuery(woof_step_pre_autosubmit).data('css-class')==jQuery(".woof_step.woof_autosubmit").find(".woof_container").last().data('css-class')){
-				woof_step_autosubmit=1;
-				woof_step_filter_submit();
-			}				
-		}else{			
-			woof_step_pre_autosubmit=curr_el
-		}		
+        var curr_el = jQuery('.woof_step_filter_current:not(".woof_container.woof_turbo_hide")');
+
+        if(jQuery(curr_el).length==0){	
+                if(jQuery(woof_step_pre_autosubmit).data('css-class')==jQuery(".woof_step.woof_autosubmit").find(".woof_container").last().data('css-class')){
+                        woof_step_autosubmit=1;
+                        woof_step_filter_submit();
+                }				
+        }else{			
+                woof_step_pre_autosubmit=curr_el
+        }		
 		
-        if(!hide && i == items.length-1){           
+        if(!hide && i == items.length-1){  
+            
+            if(typeof WoofTurboMode!='undefined' && type==2){
+                woof_step_autosubmit=1;
+            }
+            
             woof_step_filter_submit();
+            
         }
 
                 
     });
     woof_current_values=woof_current_values_temp;    
+    
 
 }
 
@@ -387,6 +422,7 @@ function woof_step_filter_check_items_(){
         
         if(!hide && i == items.length-1){           
             woof_step_filter_submit();
+
         }
 
                 
@@ -455,23 +491,36 @@ function woof_step_filter_delete_filter_data(_this){
 }
 
 function woof_step_filter_submit(){
-
+    
     if(jQuery('.woof_step').data('autosubmit') && woof_step_autosubmit){
-        jQuery('.woof_submit_search_form_container').hide();
-       
+        if(typeof WoofTurboMode=='undefined'){
+            jQuery('.woof_submit_search_form_container').hide();
+        }
+
         woof_submit_link_locked = false;
         //woof_autosubmit=1;
         woof_ajax_redraw = 0; 
-        woof_submit_link(woof_get_submit_link());
+        
         woof_step_autosubmit=0;
-		woof_step_pre_autosubmit={};
-        //  woof_submit_link_locked = true;
+	woof_step_pre_autosubmit={};
+        
+        woof_submit_link_locked = false;
+        woof_submit_link(woof_get_submit_link());
+  
         //jQuery('.woof_step .woof .woof_submit_search_form').trigger('click');
         //return false; 
+       
     }else{
         woof_ajax_redraw = 1;
         jQuery('.woof_step .woof .woof_submit_search_form').click(function(){
             woof_ajax_redraw = 0;
+            //turbo
+            if(typeof WoofTurboMode!='undefined'){
+                woof_submit_link_locked= false;
+                woof_submit_link(woof_get_submit_link());
+                return false;
+            }
+            //turbo
         })
         
         jQuery('.woof_submit_search_form_container').show();

@@ -133,21 +133,21 @@ final class WOOF_EXT_QUICK_TEXT extends WOOF_EXT {
             return;
         }
         if (isset($_REQUEST['woof_qt_extended'])) {
-            wp_enqueue_script('woof_alasql', $this->get_ext_link() . "/js/alasql/alasql.js");
+            wp_enqueue_script('woof_alasql', $this->get_ext_link() . "/js/alasql/alasql.min.js",array(),WOOF_VERSION);
             $parse_tpl = explode("/", $_REQUEST['woof_qt_extended']);
             if (count($parse_tpl) > 1 AND $parse_tpl[0] == 'custom') {
-                wp_enqueue_style('woof_qs_style', get_stylesheet_directory_uri() . "/woof_qs_templates/" . $parse_tpl[1] . "/css/" . $parse_tpl[1] . ".css");
-                wp_enqueue_script('woof_qs_script', get_stylesheet_directory_uri() . "/woof_qs_templates/" . $parse_tpl[1] . "/js/" . $parse_tpl[1] . ".js");
+                wp_enqueue_style('woof_qs_style', get_stylesheet_directory_uri() . "/woof_qs_templates/" . $parse_tpl[1] . "/css/" . $parse_tpl[1] . ".css",array(),WOOF_VERSION);
+                wp_enqueue_script('woof_qs_script', get_stylesheet_directory_uri() . "/woof_qs_templates/" . $parse_tpl[1] . "/js/" . $parse_tpl[1] . ".js",array(),WOOF_VERSION);
             } else {
-                wp_enqueue_style('woof_qs_style', $this->get_ext_link() . "/views/templates/" . $parse_tpl[0] . "/css/" . $parse_tpl[0] . ".css");
-                wp_enqueue_script('woof_qs_script', $this->get_ext_link() . "/views/templates/" . $parse_tpl[0] . "/js/" . $parse_tpl[0] . ".js");
+                wp_enqueue_style('woof_qs_style', $this->get_ext_link() . "/views/templates/" . $parse_tpl[0] . "/css/" . $parse_tpl[0] . ".css",array(),WOOF_VERSION);
+                wp_enqueue_script('woof_qs_script', $this->get_ext_link() . "/views/templates/" . $parse_tpl[0] . "/js/" . $parse_tpl[0] . ".js",array(),WOOF_VERSION);
             }
         } else {
-            wp_enqueue_script('easy-autocomplete', WOOF_LINK . 'js/easy-autocomplete/jquery.easy-autocomplete.min.js');
-            wp_enqueue_style('easy-autocomplete', WOOF_LINK . 'js/easy-autocomplete/easy-autocomplete.min.css');
-            wp_enqueue_style('easy-autocomplete-theme', WOOF_LINK . 'js/easy-autocomplete/easy-autocomplete.themes.min.css');
+            wp_enqueue_script('easy-autocomplete', WOOF_LINK . 'js/easy-autocomplete/jquery.easy-autocomplete.min.js',array(),WOOF_VERSION);
+            wp_enqueue_style('easy-autocomplete', WOOF_LINK . 'js/easy-autocomplete/easy-autocomplete.min.css',array(),WOOF_VERSION);
+            wp_enqueue_style('easy-autocomplete-theme', WOOF_LINK . 'js/easy-autocomplete/easy-autocomplete.themes.min.css',array(),WOOF_VERSION);
         }
-        wp_enqueue_script('woof_quick_search', $this->get_ext_link() . 'js/quick_search.js');
+        wp_enqueue_script('woof_quick_search', $this->get_ext_link() . 'js/quick_search.js',array(),WOOF_VERSION);
         $link = '';
         if (isset($_REQUEST['woof_quick_search_link'])) {
             $link = $_REQUEST['woof_quick_search_link'];
@@ -190,7 +190,7 @@ final class WOOF_EXT_QUICK_TEXT extends WOOF_EXT {
     }
 
     public function woof_print_applications_tabs_content() {
-        wp_enqueue_script('woof_qs_admin_', $this->get_ext_link() . 'js/admin.js');
+        wp_enqueue_script('woof_qs_admin_', $this->get_ext_link() . 'js/admin.js',array(),WOOF_VERSION);
         //***
         global $WOOF;
         $data = array();
@@ -260,7 +260,9 @@ final class WOOF_EXT_QUICK_TEXT extends WOOF_EXT {
             'cache_results' => false,
             //'no_found_rows'=>false,
             'update_post_meta_cache' => false,
-            'update_post_term_cache' => false
+            'update_post_term_cache' => false,
+            'orderby' => 'ID',
+            'order' => 'DESC',            
         );
 
         if (class_exists('SitePress')) {

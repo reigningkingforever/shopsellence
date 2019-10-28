@@ -23,6 +23,7 @@ return array(
                         'label' => __( 'Message Type', 'yith-woocommerce-cart-messages' ),
                         'desc'  => __( 'Choose the type of the message', 'yith-woocommerce-cart-messages' ),
                         'type'  => 'select',
+                        'class' => 'wc-enhanced-select',
                         'options' => YWCM_Cart_Message()->get_types(),
                         'std'   => 'minimum_amount' ),
 

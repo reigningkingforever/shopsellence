@@ -16,11 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 /* ---------------------------------------------------- */
 /* Adding welcome screen Hook							*/
 /* ---------------------------------------------------- */
-function welcome_screen_activate() {
+function yp_welcome_screen_activate() {
   set_transient( '_welcome_screen_activation_redirect', true, 30 );
 }
 
-register_activation_hook( WT_PLUGIN_DIR.'yellow-pencil.php', 'welcome_screen_activate' );
+register_activation_hook( WT_PLUGIN_DIR.'yellow-pencil.php', 'yp_welcome_screen_activate' );
 
 
 
@@ -42,7 +42,9 @@ function welcome_screen_do_activation_redirect() {
   }
 
   // Redirect to bbPress about page
-  wp_safe_redirect( add_query_arg( array( 'page' => 'yp-welcome-screen' ), admin_url( 'admin.php' ) ) );
+  if(current_user_can("edit_theme_options")){
+  	wp_safe_redirect( add_query_arg( array( 'page' => 'yp-welcome-screen' ), admin_url( 'admin.php' ) ) );
+  }
 
 }
 
@@ -72,14 +74,14 @@ function yp_welcome_screen_content(){
 	<?php if(!isset($_GET['tab'])){ ?>
 	<div class="yp-welcome-tab">
 
-		<img class="yp-featured-img" src="<?php echo WT_PLUGIN_URL; ?>images/promo.png" />
+		<img class="yp-featured-img" src="<?php echo WT_PLUGIN_URL; ?>images/admin/promo.svg" />
 
 		<div class="yp-right-content">
 			<h3>Front-End Design Tool For WordPress!</h3>
 			<p>YellowPencil is a visual design editor WordPress plugin which allows you to customize your website in real-time with a few clicks. Keep your website's design under control with YellowPencil editor.</p>
 
 			<h3>Changelog</h3>
-			Check out <a href="https://yellowpencil.waspthemes.com/changelog/" target="_blank">Changelog</a> to see update details.
+			<p>Check out <a href="https://yellowpencil.waspthemes.com/changelog/" target="_blank">Changelog</a> to see update details.</p>
 		</div>
 		<div class="clear"></div>
 
@@ -93,7 +95,6 @@ function yp_welcome_screen_content(){
 			<ul>
 				<li><a href="https://yellowpencil.waspthemes.com/documentation/" target="_blank">Documentation</a></li>
 				<li><a href="https://yellowpencil.waspthemes.com/" target="_blank">Plugin Website</a></li>
-				<li><a href="https://waspthemes.ticksy.com/" target="_blank">Official Support Forum</a></li>
 				<li><a href="https://yellowpencil.waspthemes.com/changelog/" target="_blank">Changelog</a></li>
 			</ul>
 			
@@ -101,15 +102,11 @@ function yp_welcome_screen_content(){
 
 		<div class="yp-resources-right">
 
-			<h3>Versions</h3>
-			<ul>
-				<li><a href="https://wordpress.org/plugins/yellow-pencil-visual-theme-customizer/" target="_blank">Get Free Version</a></li>
-				<li><a href="https://codecanyon.net/item/yellow-pencil-visual-customizer-for-wordpress/11322180?ref=WaspThemes" target="_blank">Get Pro Version</a></li>
-			</ul>
-
-			<h3>Join Community</h3>
+			<h3>Community</h3>
 			<ul>
 				<li><a href="https://www.facebook.com/groups/YellowPencils/" target="_blank">Facebook Community</a></li>
+				<li><a href="https://www.youtube.com/channel/UCKGdPyfmphEdBWPXR91GnYQ" target="_blank">youtube Channel</a></li>
+				<li><a href="https://waspthemes.ticksy.com/" target="_blank">Support Forum</a></li>
 			</ul>
 
 		</div>
@@ -122,7 +119,7 @@ function yp_welcome_screen_content(){
 	<div class="yp-welcome-feature feature-section">
 
 		<div class="yp-column">
-			<img class="yp-img-center" src="<?php echo WT_PLUGIN_URL; ?>images/promo-1.png">
+			<img class="yp-img-center" src="<?php echo WT_PLUGIN_URL; ?>images/admin/promo-1.svg">
 			
 			<div class="yp-feature-column">
 				<h4>Start Customizing!</h4>
@@ -132,21 +129,21 @@ function yp_welcome_screen_content(){
 		</div>
 
 		<div class="yp-column">
-			<img class="yp-img-center" src="<?php echo WT_PLUGIN_URL; ?>images/promo-2.png">
+			<img class="yp-img-center" src="<?php echo WT_PLUGIN_URL; ?>images/admin/promo-2.svg">
 			
 			<div class="yp-feature-column">
 				<h4>Manage Customizations</h4>
-				<p>Manage customizations at any time from <a href="<?php echo admin_url("admin.php?page=yellow-pencil-changes"); ?>">this page</a>. Take full control over your website's design.</p>
+				<p><a href="<?php echo admin_url("admin.php?page=yellow-pencil-changes"); ?>">Manage customizations</a> at any time. Take full control over the website's design.</p>
 			</div>
 
 		</div>
 
 		<div class="yp-column">
-			<img class="yp-img-center" src="<?php echo WT_PLUGIN_URL; ?>images/promo-3.png">
+			<img class="yp-img-center" src="<?php echo WT_PLUGIN_URL; ?>images/admin/promo-3.svg">
 			
 			<div class="yp-feature-column">
 				<h4>Community & Support!</h4>
-				<p>Join our <a target="_blank" href="https://www.facebook.com/groups/YellowPencils/">Facebook community</a> and checking out <a target="_blank" href="https://yellowpencil.waspthemes.com/documentation/">documentation</a>.</p>
+				<p>Join our <a target="_blank" href="https://www.facebook.com/groups/YellowPencils/">Facebook community</a> and checking out <a target="_blank" href="https://yellowpencil.waspthemes.com/documentation/">Plugin Documentation</a>.</p>
 			</div>
 
 		</div>
@@ -196,7 +193,7 @@ function yp_add_setting_menu() {
     	add_submenu_page( 'yellow-pencil-changes', "Go Pro!", "Go Pro!", 'edit_theme_options', 'yellow-pencil-license', 'yp_option_func');
     }
 
-    add_submenu_page( 'yellow-pencil-changes', "About", "About", 'read', 'yp-welcome-screen', 'yp_welcome_screen_content' );
+    add_submenu_page( 'yellow-pencil-changes', "About", "About", 'edit_theme_options', 'yp-welcome-screen', 'yp_welcome_screen_content' );
 
 }
 
@@ -220,15 +217,20 @@ function yp_css_style_li($title, $href, $type, $page_id = null, $page_type = nul
 			$data = get_post_meta($page_id, '_wt_css', true);
 		}
 
-		$frontID = get_option('page_on_front');
-    	$blogID = get_option('page_for_posts');
+		if(get_option("show_on_front") == "page"){
+			$frontID = get_option('page_on_front');
+	    	$blogID = get_option('page_for_posts');
+    	}else{
+    		$frontID = 0;
+	    	$blogID = 0;
+    	}
 
-		if($page_id == $frontID){
-			$plusTitle = " — Front Page";
+		if($page_id == $frontID && $frontID != 0){
+			$plusTitle = " — <span class='yp-name-highlight'>Front Page</span>";
 		}
 
-		if($page_id == $blogID){
-			$plusTitle = " — Posts Page";
+		if($page_id == $blogID && $blogID != 0){
+			$plusTitle = " — <span class='yp-name-highlight'>Posts Page</span>";
 		}
 
 		$deleteData = "ID|".$page_id;
@@ -251,18 +253,10 @@ function yp_css_style_li($title, $href, $type, $page_id = null, $page_type = nul
 		$title = "Unknown";
 	}
 
-	// Non customizable in lite
-	if($page_id == "lostpassword" || $page_id == "register" || $page_id == "login"){
-
-		// no link
-		if(!defined("WTFV")){
-			$href = "";
-		}
-
-	}
-
 	?>
 	<li<?php echo $class; ?> data-delete-value="<?php echo $deleteData; ?>">
+
+		<span class="yp-checkbox"><input type="checkbox" name="yp-customizations[]" value="<?php echo $deleteData; ?>" /></span>
 
 		<span class="yp-edited-page-title"><?php echo $title; echo $plusTitle; ?></span>
 
@@ -272,8 +266,6 @@ function yp_css_style_li($title, $href, $type, $page_id = null, $page_type = nul
 		<a class="yp-open-in-editor" title="Open With YellowPencil" target="_blank" href="<?php echo admin_url('admin.php?page=yellow-pencil-editor&href='.yp_urlencode(esc_url($href)).''); ?>&#38;yp_page_id=<?php echo $page_id; ?>&#38;yp_page_type=<?php echo $page_type; ?>&#38;yp_mode=<?php echo $type; ?>"></a>
 		<?php } ?>
 		
-		<a class="yp-show-css"></a>
-
 		<span class="yp-clear"></span>
 
 	</li>
@@ -322,7 +314,7 @@ function yp_option_update(){
 		// Import the data
 		if(isset($_POST['yp_json_import_data']) && check_admin_referer('yp_json_import_data')){
 
-			$data = trim( strip_tags ( $_POST['yp_json_import_data'] ) );
+			$data = trim( wp_strip_all_tags ( $_POST['yp_json_import_data'] ) );
 
 			if(empty($data) == false){
 
@@ -410,7 +402,6 @@ function yp_option_func() {
 			}
 		}
 
-
 		// Reset message.
 		if(isset($_POST['yp_reset']) && check_admin_referer("yp_reset")){
 			?>
@@ -418,6 +409,62 @@ function yp_option_func() {
 			        <p><strong>Defined CSS comments and plugin options have been reset.</strong></p>
 			    </div>
 			<?php
+		}
+
+
+		// bulk actions
+		if(isset($_POST["yp-customizations"]) && check_admin_referer("yp_bulk_actions") && isset($_POST["action"])){
+
+			// Delete customizations
+			if($_POST["action"] == "delete"){
+
+			// Action: delete
+			foreach ($_POST["yp-customizations"] as $key => $value){
+
+				// Delete customizations
+				yp_delete_customization(explode("|", $value)[0], explode("|", $value)[1]);
+
+			}
+
+			// Get All CSS data as ready-to-use
+		    $output = yp_get_export_css("create");
+		            
+		    // Update custom.css file
+		    yp_create_custom_css($output);
+
+			?>
+				<div id="message" class="updated">
+			        <p><strong><?php echo count($_POST["yp-customizations"]); ?> customization deleted.</strong></p>
+			    </div>
+			<?php
+
+			}
+
+		}
+
+
+		// bulk actions: animations
+		if(isset($_POST["yp-animations"]) && check_admin_referer("yp_bulk_actions_animations") && isset($_POST["action"])){
+
+			// Delete animations
+			if($_POST["action"] == "delete"){
+
+			// Action: delete
+			foreach ($_POST["yp-animations"] as $key => $value){
+
+				// Delete animations
+				delete_option(trim(wp_strip_all_tags(($value))));
+
+			}
+
+			?>
+				<div id="message" class="updated">
+			        <p><strong><?php echo count($_POST["yp-animations"]); ?> animation deleted.</strong></p>
+			    </div>
+			<?php
+
+			}
+
 		}
 
         ?>
@@ -454,7 +501,7 @@ function yp_option_func() {
             <?php
 
             	// Base directory for Ace Editor
-                echo "<script>window.aceEditorBase = '".(plugins_url( 'library/ace/' , __FILE__ ))."'; window.yp_live_styles_delete_nonce = '".wp_create_nonce('yp_live_styles_delete_nonce')."';</script>";
+                echo "<script>window.aceEditorBase = '".WT_PLUGIN_URL."library/ace/'; window.yp_live_styles_delete_nonce = '".wp_create_nonce('yp_live_styles_delete_nonce')."';</script>";
             	
             	/* ---------------------------------------------------- */
 				/* CSS CHANGES               							*/
@@ -464,7 +511,7 @@ function yp_option_func() {
                 ?>	
 
                 	<div class="yp-no-code">
-                		<img src="<?php echo WT_PLUGIN_URL; ?>images/pages.png">
+                		<img src="<?php echo WT_PLUGIN_URL; ?>images/admin/pages.png">
                     	<p>There is no style applied. <a href="<?php echo admin_url('themes.php?page=yellow-pencil'); ?>">Let's start!</a></p>
                     </div>
 
@@ -473,10 +520,28 @@ function yp_option_func() {
             		<h2>Manage Styles</h2>
                     <p class="yp-heading-text">All the changes you've made with YellowPencil are listed below. You can review, edit or delete them.</p>
 
-					<div class="yp-code-group">
+					<form method="POST" class="yp-code-group">
+
+					<?php wp_nonce_field('yp_bulk_actions'); ?>
+
+					<div class="yp-code-manager">
+
+						<div class="yp-code-action">
+							<label for="yp-bulk-action-selector-top" class="screen-reader-text">Select bulk action</label>
+							<select name="action" id="yp-bulk-action-selector-top">
+								<option value="-1">Bulk Actions</option>
+								<option value="delete">Delete</option>
+							</select>
+							<input type="submit" class="button action" value="Apply">
+						</div>
+
+						<?php $yp_export_nonce = wp_create_nonce("yp_export_nonce"); ?>
+						<a href="<?php echo admin_url("admin.php?page=yellow-pencil-changes&yp_exportCSS=true&_wpnonce=".$yp_export_nonce); ?>" class="button">Export as CSS File</a>
+
+					</div>
 
 					<div class="yp-global-group">
-						<h3>Global Customization</h3>
+						<h3><span class="yp-checkbox"><input type="checkbox" id="global-choose-all" /></span><label for="global-choose-all">Global Customization</label></h3>
 						<ul>
 						<?php
 
@@ -488,7 +553,12 @@ function yp_option_func() {
 								$count++;
 								$allCount++;
 
-								$frontpage_id = get_option('page_on_front');
+								if(get_option("show_on_front") == "page"){
+									$frontpage_id = get_option('page_on_front');
+						    	}else{
+						    		$frontpage_id = 0;
+						    	}
+
 								$frontpage_type = 'home';
 
 								// If no home page id, use only home page editing method.
@@ -512,7 +582,7 @@ function yp_option_func() {
 					?>
 
 					<div class="yp-template-group">
-						<h3>Template Customizations</h3>
+						<h3><span class="yp-checkbox"><input type="checkbox" id="template-choose-all" /></span><label for="template-choose-all">Template Customizations</label></h3>
 						<ul>
 						<?php
 
@@ -654,7 +724,7 @@ function yp_option_func() {
 
 
 					<div class="yp-single-group">
-						<h3>Single Customizations</h3>
+						<h3><span class="yp-checkbox"><input type="checkbox" id="single-choose-all" /></span><label for="single-choose-all">Single Customizations</label></h3>
 						<ul>
 						<?php
 
@@ -666,7 +736,11 @@ function yp_option_func() {
 							$count++;
 							$allCount++;
 
-							$frontpage_id = get_option('page_on_front');
+							if(get_option("show_on_front") == "page"){
+								$frontpage_id = get_option('page_on_front');
+						    }else{
+						    	$frontpage_id = 0;
+						    }
 
 							if($frontpage_id == 0 || $frontpage_id == null){
 								yp_css_style_li("Non-Static Homepage", get_home_url().'/', 'single', 'home', 'home');
@@ -748,16 +822,13 @@ function yp_option_func() {
 						}
 					?>
 
-					<!-- Shows download button -->
-					<?php if($allCount > 0){
-
-						$yp_export_nonce = wp_create_nonce("yp_export_nonce");
+					<?php if($allCount == 0){
+						echo "<style>.yp-tab-section{display:none;}.yp-no-code{display:block}</style>";
+					}
 
 					?>
-						<p><a href="<?php echo admin_url("admin.php?page=yellow-pencil-changes&yp_exportCSS=true&_wpnonce=".$yp_export_nonce); ?>" class="button button-primary">Download CSS File</a> all styles as ready to use.</p>
-					<?php }else{echo "<style>.yp-tab-section{display:none;}.yp-no-code{display:block}</style>";} ?>
 
-					</div>
+					</form>
 
 					</div>
 
@@ -806,7 +877,6 @@ function yp_option_func() {
 
 						<table class="form-table yp-form-table">
 							<tbody>
-							<?php if(defined("WTFV")){ ?>
 							<tr>
 								<?php
 
@@ -819,7 +889,6 @@ function yp_option_func() {
 								<th><input name="yp-default-global" value="0" <?php echo $a; ?> type="hidden" /><label><input name="yp-default-global" value="1" <?php echo $a; ?> type="checkbox" /> Set Global Customization As Default</label></th>
 								<td><code>single customization type is the default.</code></td>
 							</tr>
-							<?php } ?>
 							<tr>
 								<?php
 
@@ -830,7 +899,7 @@ function yp_option_func() {
 
 								?>
 								<th><input name="yp-draft-mode" value="0" <?php echo $a; ?> type="hidden" /><label><input name="yp-draft-mode" value="1" <?php echo $a; ?> type="checkbox" /> Draft Mode</label></th>
-								<td><code>Doesn't forget to disable it when you ready!</code></td>
+								<td><code>doesn't forget to disable it when you ready!</code></td>
 							</tr>
 							</tbody>
 						</table>
@@ -861,7 +930,7 @@ function yp_option_func() {
                     ?>
 
                     <div class="yp-no-animation">
-	                	<img src="<?php echo WT_PLUGIN_URL; ?>images/pages.png">
+	                	<img src="<?php echo WT_PLUGIN_URL; ?>images/admin/pages.png">
 	                    <p>There is no generated animation. You can create animation by use Animation Generator in the editor.</a></p>
 	                </div>
 
@@ -872,7 +941,23 @@ function yp_option_func() {
 		                    <h2>Manage Animations</h2>
 		                    <p class="yp-heading-text">Generated animations are listed below, You can review and delete them.</p>
 
-							<div class="yp-code-group">
+							<form method="POST" class="yp-code-group yp-animations-code-group">
+
+							<?php wp_nonce_field('yp_bulk_actions_animations'); ?>
+
+							<div class="yp-code-manager">
+
+								<div class="yp-code-action">
+									<span class="yp-checkbox"><input type="checkbox" id="animation-choose-all"></span>
+									<label for="bulk-action-selector-top" class="screen-reader-text">Select bulk action</label>
+									<select name="action" id="bulk-action-selector-top">
+										<option value="-1">Bulk Actions</option>
+										<option value="delete">Delete</option>
+									</select>
+									<input type="submit" id="doaction" class="button action" value="Apply">
+								</div>
+
+							</div>
 
 								<ul>
 
@@ -897,11 +982,11 @@ function yp_option_func() {
 												?>
 												<li data-delete-value="<?php echo $deleteData; ?>">
 
+												<span class="yp-checkbox"><input type="checkbox" name="yp-animations[]" value="<?php echo $deleteData; ?>"></span>
+
 												<span class="yp-edited-page-title"><?php echo ucwords(strtolower($name)); ?></span>
 
 												<a class="yp-delete-page-edits" title="Delete"></a>
-
-												<a class="yp-show-css"></a>
 
 												<span class="yp-clear"></span>
 
@@ -915,7 +1000,7 @@ function yp_option_func() {
 
 								</ul>
 
-							</div>
+							</form>
 
 						</div>
 
@@ -943,10 +1028,10 @@ function yp_option_func() {
                 	}
 
                 	// If isset product license, ie activation success.
-                	if(isset($_GET['purchase_code']) == true){
+                	if(isset($_POST['purchase_code']) == true){
 
                 		// Purchase Code
-                		$code = sanitize_key($_GET['purchase_code']);
+                		$code = sanitize_key($_POST['purchase_code']);
 
                 		// Adds Product code
                 		if(!update_option("yp_purchase_code",$code)){
@@ -971,31 +1056,35 @@ function yp_option_func() {
                 	$isActive = false;
 
                 	// Button Text
-                	if(isset($_GET['purchase_code']) || $purchase_code){
+                	if(isset($_POST['purchase_code']) || $purchase_code){
 
+                		// Disable license nonce
                 		$yp_disable_license_nonce = wp_create_nonce('yp_disable_license_nonce');
 
+                		// pCode
+                		$pcode = $purchase_code;
+
+                		// New pCode
+                		if(isset($_POST['purchase_code'])){
+                			$pcode = $_POST['purchase_code'];
+                		}
+
+                		$siteURL = wp_parse_url(get_home_url());
+
                 		$isActive = true;
-                		$activate_btn = "YellowPencil Activated";
-                		$aclink = '<a class="button button-primary button-hero yp-product-activation disabled">';
-                		$disableLink = '<div><a class="yp-disable-license" href="'.admin_url('admin.php?page=yellow-pencil-license&yp-disable-license=true&_wpnonce='.$yp_disable_license_nonce).'">Disable License!</a></div>';
+                		$activate_btn = "Unlink License";
+                		$aclink = '<a class="yp-disable-license" data-site="'.$siteURL["host"].'" data-code="'.$pcode.'" data-href="'.admin_url('admin.php?page=yellow-pencil-license&yp-disable-license=true&_wpnonce='.$yp_disable_license_nonce).'">';
 
                 	}else{
 
                 		$activate_btn = "Activate YellowPencil Pro";
                 		$aclink = '<a class="button button-primary button-hero yp-product-activation" href="https://waspthemes.com/yellow-pencil/auto-update/?client-redirect='.urlencode(admin_url('admin.php?page=yellow-pencil-license')).'">';
-                		$disableLink = '';
 
                 	}
 
                 	// Thank you.
-                	if(isset($_GET['purchase_code'])){
+                	if(isset($_POST['purchase_code'])){
                 		echo '<div class="updated"><p><strong>YellowPencil Pro successfully activated.</strong></p></div>';
-                	}
-
-                	// no license founded
-                	if(isset($_GET['activation_error'])){
-                		echo '<div class="error"><p><strong>No licenses found on your Envato account, <a href="https://waspthemes.com/yellow-pencil/buy/" target="_blank">Get your copy today</a>.</strong></p></div>';
                 	}
 
                 	?>
@@ -1036,8 +1125,6 @@ function yp_option_func() {
 
 	                    	<?php echo $aclink; ?><?php echo $activate_btn; ?></a>
 
-	                    	<?php echo $disableLink; ?>
-
 	                    </p>
 
 	                    <?php if($isActive == false){ ?>
@@ -1050,7 +1137,7 @@ function yp_option_func() {
 
 						<?php }else{ ?>
 
-							<p class='description'>YellowPencil Pro Successfully activated. <a href='<?php echo admin_url('admin.php?page=yp-welcome-screen'); ?>'>Let's Start!</a></p>
+							<p class='description'>YellowPencil Pro is activated. <a href='<?php echo admin_url('admin.php?page=yp-welcome-screen'); ?>'>Let's Start!</a></p>
 
 						<?php } ?>
 

@@ -1,6 +1,6 @@
 ;(function($) {
 
-    "use strict";
+    "use strict"; 
 
     /* ---------------------------------------------------- */
     /* Setup Ace Editor.                                    */
@@ -52,7 +52,7 @@
             /* ---------------------------------------------------- */
             /* Fix multiple load problem.                           */
             /* ---------------------------------------------------- */
-            if ($("body").hasClass("yp-yellow-pencil-loaded")){
+            if ($("body").hasClass("yellow-pencil-ready")){
                 return false;
             }
 
@@ -145,7 +145,7 @@
                 $(".yp-element-picker").removeClass("active");
 
                 body.toggleClass("yp-wireframe-mode");
-                $(".yp-editor-list > li.active > h3").trigger("click");
+                $(".editor-panel-list > li.active > h3").trigger("click");
                 gui_update();
 
             });
@@ -1046,17 +1046,6 @@
 
 
             /* ---------------------------------------------------- */
-            /* Lock Properties                                      */
-            /* ---------------------------------------------------- */
-            $(".lock-btn").on("click",function(){
-
-                // Toggle active
-                $(this).toggleClass("active");
-
-            });
-
-
-            /* ---------------------------------------------------- */
             /* Getting first Font Family                            */
             /* ---------------------------------------------------- */
             function get_font_name(family){
@@ -1216,12 +1205,12 @@
                 defaultWidth = 300;
             }
             var number = read_cookie("rightPanelWidth", defaultWidth);
-            mainBody.append("<style id='rightpanel-personalized-view'>.yp-fixed-right-panel:not(.yp-animate-manager-active) #iframe{width:calc(100% - "+number+"px - 46px) !important;}.yp-select-bar{width:"+number+"px !important;}</style>");
+            mainBody.append("<style id='rightpanel-personalized-view'>.yp-fixed-right-panel:not(.yp-animate-manager-active) #iframe{width:calc(100% - "+number+"px - 46px) !important;}.editor-panel{width:"+number+"px !important;}</style>");
 
             /* ---------------------------------------------------- */
             /* Makes Right Panel Resizeable                         */
             /* ---------------------------------------------------- */
-            $( ".yp-select-bar" ).resizable({
+            $( ".editor-panel" ).resizable({
 
                 handles: "w, e",
                 minWidth: 288,
@@ -1241,7 +1230,7 @@
                     $("#rightpanel-personalized-view").remove();
 
                     // update
-                    mainBody.append("<style id='rightpanel-personalized-view'>.yp-fixed-right-panel:not(.yp-animate-manager-active) #iframe{width:calc(100% - "+ui.size.width+"px - 46px) !important;}.yp-select-bar{width:"+ui.size.width+"px !important;}</style>");
+                    mainBody.append("<style id='rightpanel-personalized-view'>.yp-fixed-right-panel:not(.yp-animate-manager-active) #iframe{width:calc(100% - "+ui.size.width+"px - 46px) !important;}.editor-panel{width:"+ui.size.width+"px !important;}</style>");
 
                 },
 
@@ -2031,12 +2020,12 @@
 
                 if ($(this).hasClass("active") && $(".yp-sharp-selector-btn.active").length > 0) {
                     $(".yp-sharp-selector-btn").removeClass("active");
-                    body.removeClass("yp-sharp-selector-mode-active");
-                    iframeBody.removeClass("yp-sharp-selector-mode-active");
+                    body.removeClass("yp-single-inspector-active");
+                    iframeBody.removeClass("yp-single-inspector-active");
                     window.singleInspector = false;
                 }
                 
-                body.toggleClass("yp-body-selector-mode-active");
+                body.toggleClass("yp-flexible-inspector-active");
                 clean();
 
             });
@@ -2759,7 +2748,7 @@
                     if(iframe.find(".yp-selected").length > 0){
 
 
-                        if(mainBody.hasClass("yp-sharp-selector-mode-active")){
+                        if(mainBody.hasClass("yp-single-inspector-active")){
                             selector = $.trim(get_parents(null, "sharp"));
                         }else{
                             selector = $.trim(get_parents(null, "default"));
@@ -2869,7 +2858,7 @@
             /* ---------------------------------------------------- */
             /* Up/Down keys for prefixes                            */
             /* ---------------------------------------------------- */
-            $(".yp-after-prefix").keydown(function(e){
+            $(".yp-css-format").keydown(function(e){
 
                 if($(this).val() == 'xp'){
                     $(this).val("px");
@@ -2979,10 +2968,10 @@
             /* ---------------------------------------------------- */
             $(".yp-sharp-selector-btn").click(function() {
 
-                body.toggleClass("yp-sharp-selector-mode-active");
+                body.toggleClass("yp-single-inspector-active");
 
                 // Update variable
-                if(body.hasClass('yp-sharp-selector-mode-active')){
+                if(body.hasClass('yp-single-inspector-active')){
                     window.singleInspector = true;
                 }else{
                     window.singleInspector = false;
@@ -2997,7 +2986,7 @@
             /* ---------------------------------------------------- */
             /* Up / Down keys for property input value              */
             /* ---------------------------------------------------- */
-            $(".yp-after-css-val").keydown(function(e) {
+            $(".yp-css-value").keydown(function(e) {
 
                 var code = e.keyCode || e.which;
 
@@ -3031,7 +3020,7 @@
             /* ---------------------------------------------------- */
             /* Number filter for numberic properties input          */
             /* ---------------------------------------------------- */
-            $(".yp-after-css-val").keyup(function(e) {
+            $(".yp-css-value").keyup(function(e) {
 
                 // Number only
                 var numbers = $(this).val().replace(/[^0-9.,-]/g,'');
@@ -3043,7 +3032,7 @@
                 // non-number only
                 var prefixs = $(this).val().replace(/[0-9.,-]/g,'');
 
-                var prefixSelector = $(this).parent().find(".yp-after-prefix");
+                var prefixSelector = $(this).parent().find(".yp-css-format");
 
                 if(prefixs.length > 0){
 
@@ -3447,7 +3436,7 @@
             /* ---------------------------------------------------- */
             $('[data-toggle="tooltipTopBottom"]').tooltip({
                 animation: false,
-                container: ".yp-select-bar",
+                container: ".editor-panel",
                  template: '<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
                 html: true
             });
@@ -3466,7 +3455,7 @@
 
             $(".yp-none-btn").tooltip({
                 animation: false,
-                container: '.yp-select-bar',
+                container: '.editor-panel',
                 title: l18_none
             });
 
@@ -3478,7 +3467,7 @@
             $('[data-toggle="tooltip"]').tooltip({
 
                 animation: false,
-                container: ".yp-select-bar",
+                container: ".editor-panel",
                 html: true
 
             }).on('shown.bs.tooltip', function () {
@@ -3497,7 +3486,7 @@
             $('[data-toggle="popover"]').popover({
                 animation: false,
                 trigger: 'hover',
-                container: ".yp-select-bar"
+                container: ".editor-panel"
             });
 
             $('.yp-option-group,.yp-advanced-option').on('shown.bs.popover', function () {
@@ -3514,16 +3503,16 @@
             /* Setup The plugin                                     */
             /* ---------------------------------------------------- */
             body.addClass("yp-yellow-pencil");
-            body.addClass("yp-yellow-pencil-loaded");
+            body.addClass("yellow-pencil-ready");
 
 
             /* ---------------------------------------------------- */
             /* Editor Panel: Draggable                              */
             /* ---------------------------------------------------- */
-            $(".yp-select-bar").draggable({
+            $(".editor-panel").draggable({
 
-                handle: ".yp-editor-top",
-                cancel: ".yp-editor-top *",
+                handle: ".editor-panel-top",
+                cancel: ".editor-panel-top *",
 
                 start: function(){
 
@@ -3541,9 +3530,9 @@
                         create_cookie('FixedrightPanel', "0");
 
                         // Default is 300 width in fixed, set 288 when go default if width is default.
-                        if($(".yp-select-bar").width() == 300){
+                        if($(".editor-panel").width() == 300){
                             var width = 288;
-                            mainBody.append("<style id='rightpanel-personalized-view'>.yp-fixed-right-panel:not(.yp-animate-manager-active) #iframe{width:calc(100% - "+width+"px - 46px) !important;}.yp-select-bar{width:"+width+"px !important;}</style>");
+                            mainBody.append("<style id='rightpanel-personalized-view'>.yp-fixed-right-panel:not(.yp-animate-manager-active) #iframe{width:calc(100% - "+width+"px - 46px) !important;}.editor-panel{width:"+width+"px !important;}</style>");
                         }
 
                         draw();
@@ -3558,7 +3547,7 @@
                     ui.position.top = Math.min($(window).height() - 30, ui.position.top);
 
                     // Show placeover for fixed right
-                    if(ui.position.left > ($(window).width() - $(".yp-select-bar").width())){
+                    if(ui.position.left > ($(window).width() - $(".editor-panel").width())){
                         $(".yp-right-panel-placeholder").show();
                     }else{
                         $(".yp-right-panel-placeholder").hide();
@@ -3579,14 +3568,14 @@
                     $(".yp-right-panel-placeholder").hide();
 
                     // Go fixed right mode.
-                    if(ui.position.left > ($(window).width() - $(".yp-select-bar").width())){
+                    if(ui.position.left > ($(window).width() - $(".editor-panel").width())){
 
                         mainBody.addClass("yp-fixed-right-panel");
 
                         // Default is 288 width, set 300 when go fixed if width is default.
-                        if($(".yp-select-bar").width() == 288){
+                        if($(".editor-panel").width() == 288){
                             var width = 300;
-                            mainBody.append("<style id='rightpanel-personalized-view'>.yp-fixed-right-panel:not(.yp-animate-manager-active) #iframe{width:calc(100% - "+width+"px - 46px) !important;}.yp-select-bar{width:"+width+"px !important;}</style>");
+                            mainBody.append("<style id='rightpanel-personalized-view'>.yp-fixed-right-panel:not(.yp-animate-manager-active) #iframe{width:calc(100% - "+width+"px - 46px) !important;}.editor-panel{width:"+width+"px !important;}</style>");
                         }
 
                         draw();
@@ -3648,7 +3637,7 @@
             /* ---------------------------------------------------- */
             /* Hide Borders on panel hover                          */
             /* ---------------------------------------------------- */
-            $(".top-area-btn-group,.yp-select-bar,.metric").hover(function() {
+            $(".editor-leftbar,.editor-panel,.metric").hover(function() {
                 if (is_content_selected() === false) {
                     clean();
                 }
@@ -4210,7 +4199,7 @@
 
                 var group = $("#" + id + "-group");
                 $(".yp-this-content").hide();
-                $(".yp-editor-list > li").removeClass("active");
+                $(".editor-panel-list > li").removeClass("active");
                 group.parent().prev("h3").trigger("click");
                 group.parent().parent("li").show(); // be sure it visible.
                 group.addClass("focus-option");
@@ -4530,7 +4519,7 @@
             /* ---------------------------------------------------- */
             /* Updating Responsive handles on CSS editor toggle     */
             /* ---------------------------------------------------- */
-            $(".top-area-btn,.yp-css-close-btn").click(function(){
+            $(".leftbar-button,.yp-css-close-btn").click(function(){
                 setTimeout(function(){
                     window.FrameleftOffset = undefined;
                     draw_responsive_handle();
@@ -4541,7 +4530,7 @@
             /* ---------------------------------------------------- */
             /* Active Classes Left Panel                            */
             /* ---------------------------------------------------- */
-            $(".top-area-btn:not(.undo-btn):not(.redo-btn):not(.css-editor-btn)").click(function(){
+            $(".leftbar-button:not(.undo-btn):not(.redo-btn):not(.css-editor-btn)").click(function(){
 
                 if(is_animate_creator() === false){
 
@@ -5825,7 +5814,7 @@
             /* ---------------------------------------------------- */
             /* Setup inside collapse iris picker                    */
             /* ---------------------------------------------------- */
-            $('.yp-select-bar .wqcolorpicker').cs_iris({
+            $('.editor-panel .wqcolorpicker').cs_iris({
                 hide: true,
                 width: wIris
             });
@@ -6277,7 +6266,7 @@
                 }
 
                 // current options
-                var options = $(".yp-editor-list > li.active .yp-option-group");
+                var options = $(".editor-panel-list > li.active .yp-option-group");
 
                 // delete all cached data.
                 $("li[data-loaded]").removeAttr("data-loaded");
@@ -6625,8 +6614,8 @@
                 var range;
 
                 if(value === false){
-                    value = element.parent().find(".yp-after-css-val").val();
-                    prefix = element.parent().find(".yp-after-prefix").val();
+                    value = element.parent().find(".yp-css-value").val();
+                    prefix = element.parent().find(".yp-css-format").val();
                 }
 
                 var slide = element.parent().parent().find(".wqNoUi-target");
@@ -6761,7 +6750,7 @@
             /* ---------------------------------------------------- */
             /* Blur Custom Slider Value                             */
             /* ---------------------------------------------------- */
-            $(".yp-after-css-val,.yp-after-prefix").on("keydown keyup",function(e){
+            $(".yp-css-value,.yp-css-format").on("keydown keyup",function(e){
 
                 if(!e.originalEvent){
                     return false;
@@ -6789,8 +6778,8 @@
                             });
                         }
 
-                        var value = element.parent().find(".yp-after-css-val").val();
-                        var prefix = element.parent().find(".yp-after-prefix").val();
+                        var value = element.parent().find(".yp-css-value").val();
+                        var prefix = element.parent().find(".yp-css-format").val();
 
                         // Self
                         update_slide_by_input(element,false);
@@ -7508,10 +7497,10 @@
                 var height = 0;
 
                 // Elements
-                var panel = $(".yp-select-bar");
-                var panel_editor = $(".yp-editor-panel");
-                var top = $(".yp-editor-top");
-                var footer = $(".yp-panel-footer");
+                var panel = $(".editor-panel");
+                var panel_editor = $(".editor-panel-inner");
+                var top = $(".editor-panel-top");
+                var footer = $(".editor-panel-footer");
 
                 // Get Scroll Top because need to keep scrollTop
                 // for fix scrolling Top problem after re-edit panel height.
@@ -7542,7 +7531,7 @@
                 }
 
                 // Hide Panel Footer in CSS Properties Section
-                if($(".yp-editor-list > li.active").length > 0){
+                if($(".editor-panel-list > li.active").length > 0){
                     footer.hide();
                 }else{
                     footer.show();
@@ -8347,7 +8336,7 @@
                 clearTimeout(typingTimer);
                 typingTimer = setTimeout(function() {
 
-                    if (body.hasClass("yp-selectors-hide") && $(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".yp-select-bar .tooltip").length === 0) {
+                    if (body.hasClass("yp-selectors-hide") && $(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".editor-panel .tooltip").length === 0) {
 
                         body.removeClass("yp-selectors-hide");
 
@@ -8416,7 +8405,7 @@
             /* ---------------------------------------------------- */
             /* Process CSS                                          */
             /* ---------------------------------------------------- */
-            $(".yp-select-bar").on("mouseover mouseout", function() {
+            $(".editor-panel").on("mouseover mouseout", function() {
 
                 if (mainBody.hasClass("yp-need-to-process")) {
 
@@ -8516,7 +8505,7 @@
                         return false;
                     }
 
-                    if (body.hasClass("yp-selectors-hide") && $(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".yp-select-bar .tooltip").length === 0) {
+                    if (body.hasClass("yp-selectors-hide") && $(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".editor-panel .tooltip").length === 0) {
 
                         body.removeClass("yp-selectors-hide");
 
@@ -8533,7 +8522,7 @@
             /* ---------------------------------------------------- */
             iframe.on("mouseover", iframe, function(){
 
-                if ($(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".yp-select-bar .tooltip").length === 0) {
+                if ($(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".editor-panel .tooltip").length === 0) {
 
                     show_frame_ui(200);
 
@@ -8545,9 +8534,9 @@
             /* ---------------------------------------------------- */
             /* Show borders when panel mouseleave                   */
             /* ---------------------------------------------------- */
-            iframe.on("mouseleave", ".yp-select-bar", function(){
+            iframe.on("mouseleave", ".editor-panel", function(){
 
-                if (body.hasClass("yp-selectors-hide") && $(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".yp-select-bar .tooltip").length === 0) {
+                if (body.hasClass("yp-selectors-hide") && $(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".editor-panel .tooltip").length === 0) {
 
                     body.removeClass("yp-selectors-hide");
 
@@ -9341,9 +9330,9 @@
 
                     if(css.length > 0){
                         var bayt = get_clean_css(true, type).match(/:(.*?);/g).length;
-                        element.find(".type-bayt span").html(bayt + " rule");
+                        element.find(".type-byte span").html(bayt + " rule");
                     }else{
-                        element.find(".type-bayt span").html("empty");
+                        element.find(".type-byte span").html("empty");
                     }
 
                 });
@@ -10554,7 +10543,7 @@
                     if(size == 'desktop'){sizeView = 'all';}
 
                     if(size == 'desktop'){
-                        var sizeTooltip = 'Any screen size.';
+                        var sizeTooltip = 'All screen sizes';
                     }else{
                         var sizeTooltip = process_media_query(sizeView);
                     }
@@ -11226,26 +11215,26 @@
             function get_format_range(prefix, group){
 
                 // Default Pixel Range
-                var range = group.data("px-range").split(",");
+                var range = group.data("px").split(",");
 
                 // Update %.
                 if (prefix == '%' || prefix == 'vw' || prefix == 'vh') {
-                    range = group.data("pc-range").split(",");
+                    range = group.data("pc").split(",");
                 }
 
                 // Update EM.
                 if (prefix == 'em' || prefix == 'rem' || prefix == 'ex' || prefix == 'cm' || prefix == 'in' || prefix == 'pc') {
-                    range = group.data("em-range").split(",");
+                    range = group.data("em").split(",");
                 }
 
                 // Update S.
                 if (prefix == 's') {
-                    range = group.data("em-range").split(",");
+                    range = group.data("em").split(",");
                 }
 
                 // Update MS.
                 if (prefix == 'ms') {
-                    range = group.data("em-range").split(",");
+                    range = group.data("em").split(",");
                     range[0] = parseInt(range[0]*1000);
                     range[1] = parseInt(range[1]*1000);
                 }
@@ -11265,12 +11254,12 @@
                 var elementParent = $("#" + id + "-group");
 
                 // Set Maximum and minimum values for custom prefixs.
-                elementParent.data("px-range", pxv);
-                elementParent.data("pc-range", pcv);
-                elementParent.data("em-range", emv);
+                elementParent.data("px", pxv);
+                elementParent.data("pc", pcv);
+                elementParent.data("em", emv);
 
                 // Get prefix
-                var prefix = $("#" + id + "-group .yp-after-prefix").val();
+                var prefix = $("#" + id + "-group .yp-css-format").val();
 
                 // Getting range
                 var range = get_format_range(prefix, elementParent);
@@ -11574,7 +11563,7 @@
                         content: l18_display_notice,
                         trigger: 'hover',
                         placement: "left",
-                        container: ".yp-select-bar",
+                        container: ".editor-panel",
                         html: true
                     }).popover("show");
 
@@ -11592,7 +11581,7 @@
                         content: l18_negative_margin_notice,
                         trigger: 'hover',
                         placement: "left",
-                        container: ".yp-select-bar",
+                        container: ".editor-panel",
                         html: true
                     }).popover("show");
 
@@ -11621,7 +11610,7 @@
                         content: l18_list_notice1,
                         trigger: 'hover',
                         placement: "left",
-                        container: ".yp-select-bar",
+                        container: ".editor-panel",
                         html: true
                     }).popover("show");
 
@@ -11650,7 +11639,7 @@
                         content: "This change does not appear in the editor, check it with Live Preview.",
                         trigger: 'hover',
                         placement: "left",
-                        container: ".yp-select-bar",
+                        container: ".editor-panel",
                         html: true
                     }).popover("show");
 
@@ -11691,7 +11680,7 @@
                         content: l18_list_notice,
                         trigger: 'hover',
                         placement: "left",
-                        container: ".yp-select-bar",
+                        container: ".editor-panel",
                         html: true
                     }).popover("show");
 
@@ -11720,7 +11709,7 @@
                         content: l18_display_notice,
                         trigger: 'hover',
                         placement: "left",
-                        container: ".yp-select-bar",
+                        container: ".editor-panel",
                         html: true
                     }).popover("show");
 
@@ -11811,7 +11800,7 @@
                         content: l18_high_position_notice,
                         trigger: 'hover',
                         placement: "left",
-                        container: ".yp-select-bar",
+                        container: ".editor-panel",
                         html: true
                     }).popover("show");
 
@@ -11853,7 +11842,7 @@
                         content: l18_fixed_notice,
                         trigger: 'hover',
                         placement: "left",
-                        container: ".yp-select-bar",
+                        container: ".editor-panel",
                         html: true
                     }).popover("show");
 
@@ -11866,7 +11855,7 @@
                         content: l18_absolute_notice,
                         trigger: 'hover',
                         placement: "left",
-                        container: ".yp-select-bar",
+                        container: ".editor-panel",
                         html: true
                     }).popover("show");
 
@@ -11897,7 +11886,7 @@
                         content: l18_bg_img_notice_two,
                         trigger: 'hover',
                         placement: "left",
-                        container: ".yp-select-bar",
+                        container: ".editor-panel",
                         html: true
                     }).popover("show");
 
@@ -11934,7 +11923,7 @@
                         content: l18_display_notice,
                         trigger: 'click',
                         placement: "left",
-                        container: ".yp-select-bar",
+                        container: ".editor-panel",
                         html: true
                     }).popover("show");
 
@@ -11955,7 +11944,7 @@
 
 
             // Hide while editor options scrolling
-            $(".yp-editor-panel").on("scroll", function(){
+            $(".editor-panel-inner").on("scroll", function(){
                 $(".yp-option-group,.yp-advanced-option").popover("hide");
             });
 
@@ -12322,9 +12311,9 @@
 
             // Toggle options.
             $(".wf-close-btn-link").click(function(e) {
-                if ($(".yp-editor-list > li.active").length > 0) {
+                if ($(".editor-panel-list > li.active").length > 0) {
                     e.preventDefault();
-                    $(".yp-editor-list > li.active > h3").trigger("click");
+                    $(".editor-panel-list > li.active > h3").trigger("click");
                 }
             });
 
@@ -13654,7 +13643,7 @@
                     $("#margin-left-group,#margin-right-group,#margin-top-group,#margin-bottom-group,#padding-left-group,#padding-right-group,#padding-top-group,#padding-bottom-group,#background-color-group,#background-size-group,#background-repeat-group,#background-blend-mode-group,#background-attachment-group,#background-position-group,#box-shadow-color-group,#animation-name-group,#list-style-position-group,#list-style-image-group,#list-style-type-group").popover("destroy");
 
                     // close open menu
-                    $(".yp-editor-list > li.active > h3").trigger("click");
+                    $(".editor-panel-list > li.active > h3").trigger("click");
 
                     // Dont stop playing animate
                     if(mainBody.hasClass("yp-animate-manager-playing") === false){
@@ -13672,7 +13661,7 @@
                     $("li[data-loaded]").removeAttr("data-loaded");
 
                     // copied by iframe click select section.
-                    $(".yp-editor-list > li.active > h3").trigger("click");
+                    $(".editor-panel-list > li.active > h3").trigger("click");
 
                     $(".input-autocomplete").removeAttr("style");
                     $(".yp-disable-contextmenu").removeClass("yp-disable-contextmenu");
@@ -15302,7 +15291,7 @@
                             numberData = 0;
                         }
 
-                        var range = id_prt.data("px-range").split(",");
+                        var range = id_prt.data("px").split(",");
 
                         var $min = parseInt(range[0]); // mininum value
                         var $max = parseInt(range[1]); // maximum value
@@ -16859,7 +16848,7 @@
                     var type = element.attr("type");
 
                     // Single Inspector
-                    if(mainBody.hasClass("yp-sharp-selector-mode-active")){
+                    if(mainBody.hasClass("yp-single-inspector-active")){
 
                         window.reGetBestClass = true;
 
@@ -16909,7 +16898,7 @@
                 // Matchless Classes for single Inspector
                 var matchlessClass = false;
 
-                if(mainBody.hasClass("yp-sharp-selector-mode-active")){
+                if(mainBody.hasClass("yp-single-inspector-active")){
 
                     // Filtered 2 classes: AI
                     matchlessClass = matchless2(ai_class(filteredClasses2Array,true,false));
@@ -17255,9 +17244,9 @@
                     if(newSelector != false){
 
                         if(iframe.find(".yp-selected-others").length == 0 && iframe.find(newSelector).length > 1){
-                            body.addClass("yp-sharp-selector-mode-active");
+                            body.addClass("yp-single-inspector-active");
                             newSelector = get_parents(null, "default");
-                            body.removeClass("yp-sharp-selector-mode-active");
+                            body.removeClass("yp-single-inspector-active");
                         }
 
                         set_selector(newSelector, get_selected_element(), true);
@@ -17964,7 +17953,7 @@
 
 
                 // Is Single Inspector
-                if(mainBody.hasClass("yp-sharp-selector-mode-active")){
+                if(mainBody.hasClass("yp-single-inspector-active")){
                     status = 'sharp';
                 }
 
@@ -19876,7 +19865,7 @@
                     }
 
                     $("#iframe").remove();
-                    body.removeClass("yp-yellow-pencil-loaded");
+                    body.removeClass("yellow-pencil-ready");
                     $(".loading-files").html("Page loading..");
 
                     // Get parent url
@@ -21344,7 +21333,7 @@
             /* Doesn't getting styles while element hover           */
             /* because the editor must load only non-hover styles   */
             /* ---------------------------------------------------- */
-            body.on('mousedown', '.yp-editor-list > li:not(.active)', function() {
+            body.on('mousedown', '.editor-panel-list > li:not(.active)', function() {
 
                 if (is_content_selected() === true) {
 
@@ -21696,7 +21685,7 @@
             /* ---------------------------------------------------- */
             /* Collapse List                                        */
             /* ---------------------------------------------------- */
-            $(".yp-editor-list > li > h3").click(function() {
+            $(".editor-panel-list > li > h3").click(function() {
 
                 // Disable picker on color close.
                 mainBody.removeClass("yp-element-picker-active");
@@ -21706,7 +21695,7 @@
                 var element = $(this);
                 var elementParent = element.parent();
                 var closeBtn = $(".yp-close-btn");
-                var list = $(".yp-editor-list > li");
+                var list = $(".editor-panel-list > li");
                 var lockBtn = $(".lock-btn");
 
                 // Toggle
@@ -21730,7 +21719,7 @@
                 }
 
                 // Scroll Top
-                $('.yp-editor-panel').scrollTop(0);
+                $('.editor-panel-inner').scrollTop(0);
 
                 // Hide Popovers
                 $(".yp-option-group,.yp-advanced-option").popover("hide");

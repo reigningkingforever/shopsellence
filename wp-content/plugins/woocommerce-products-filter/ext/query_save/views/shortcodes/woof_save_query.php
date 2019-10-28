@@ -56,12 +56,19 @@ if (is_user_logged_in() AND isset($WOOF->settings['query_save']) ) {
             //var_dump($real_query);
             if(isset($WOOF->settings['items_order'])){
                 $key_array=explode(',',$WOOF->settings['items_order']);
+                $by_only_array=array('woof_text','stock','onsales','woof_sku','product_visibility');
+                $key_array= array_merge($by_only_array, $key_array);
+
                 $real_query=array_intersect(array_keys($get_array),$key_array);
                 if(count($real_query)){
                     $show_btn=true;
                 }
 
-                foreach ($WOOF->settings['meta_filter'] as $item) {
+                $meta_filter=array();
+                if(is_array($WOOF->settings['meta_filter'])){
+                    $meta_filter = $WOOF->settings['meta_filter'];
+                }
+                foreach ($meta_filter as $item) {
                     $key = $item['search_view'] . "_" . $item['meta_key'];
                     if (in_array($key,array_keys($get_array))) {
                         $show_btn=true;
@@ -69,7 +76,7 @@ if (is_user_logged_in() AND isset($WOOF->settings['query_save']) ) {
                 }
             }
             
-            if ($show_btn ) { // hide btn without search query
+            if ($show_btn OR class_exists("WOOF_EXT_TURBO_MODE") ) { // hide btn without search query
 		$visible = 'none';
 		if ($query_count > count($user_data_queries)) {
 		    $visible = 'block';

@@ -68,7 +68,7 @@ class WF_CSV_Parser {
 
         // Put all CSV data into an associative array
         if (( $handle = fopen($file, "r") ) !== FALSE) {
-
+            $delimiter = WF_ProdImpExpCsv_Product_Import::wt_get_csv_delimiter($delimiter); //(strtolower($delimiter) == 'tab' ? "\t" : $delimiter);
             $header = fgetcsv($handle, 0, $delimiter);
             if ($start_pos != 0)
                 fseek($handle, $start_pos);

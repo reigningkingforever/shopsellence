@@ -89,6 +89,9 @@ final class WOOF_EXT_QUERY_SAVE extends WOOF_EXT {
 	$data['link'] = esc_url($_POST['link']);
 	$data['get'] =$this->woof_get_html_terms($this->sanitaz_array_r($_POST['get_var']));
 	$saved_q = get_user_meta($data['user_id'], $this->user_meta_key, true);
+        if(!is_array($saved_q)){
+            $saved_q=array();
+	}
         $data['request'] =$this->sanitazed_sql_query(base64_decode($WOOF->storage->get_val("woof_pm_request_".$data['user_id'])));
         // If the request has banned operators or is empty
         if(!$data['request'] OR empty($data['request'])){
@@ -100,6 +103,9 @@ final class WOOF_EXT_QUERY_SAVE extends WOOF_EXT {
         if($pos){
             $data['request']=substr($data['request'],0,$pos);
         }
+	if(!is_array($saved_q)){
+		$saved_q=array();
+	}	        
 	if (count($saved_q) >= $this->search_count) {
 	    die('count is max'); // Check limit count on backend
 	}

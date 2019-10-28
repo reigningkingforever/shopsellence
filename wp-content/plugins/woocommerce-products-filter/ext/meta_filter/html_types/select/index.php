@@ -17,8 +17,8 @@ if (!defined('ABSPATH'))
         add_filter('woof_extensions_type_index',array($this, 'add_type_index'));
     } 
     public function wp_footer(){
-        wp_enqueue_script( 'meta-select-js',  $this->get_meta_filter_link(). 'js/select.js', array('jquery'), '', true );
-        wp_enqueue_style( 'meta-select-css',  $this->get_meta_filter_link(). 'css/select.css' );
+        wp_enqueue_script( 'meta-select-js',  $this->get_meta_filter_link(). 'js/select.js', array('jquery'),WOOF_VERSION, true );
+        wp_enqueue_style( 'meta-select-css',  $this->get_meta_filter_link(). 'css/select.css',array(),WOOF_VERSION);
     }    
      
     public function get_meta_filter_path(){

@@ -3,7 +3,7 @@
  * Plugin Name: YITH Pre-Launch
  * Plugin URI: https://yithemes.com/themes/plugins/yith-pre-launch/
  * Description: YITH Pre-Launch allows you to add a prelaunch page and customize it.
- * Version: 1.3.0
+ * Version: 1.3.1
  * Author: YITHEMES
  * Author URI: http://yithemes.com/
  * Text Domain: yith-pre-launch
@@ -11,7 +11,7 @@
  *
  * @author Your Inspiration Themes
  * @package YITH Pre-Launch
- * @version 1.0.4
+ * @version 1.3.1
  */
 /*  Copyright 2013  Your Inspiration Themes  (email : plugins@yithemes.com)
 
@@ -41,7 +41,7 @@ define( 'YITH_PRELAUNCH', true );
 define( 'YITH_PRELAUNCH_URL', plugin_dir_url( __FILE__ ) );
 define( 'YITH_PRELAUNCH_DIR', plugin_dir_path( __FILE__ ) );
 define( 'YITH_PRELAUNCH_OPTIONS_FILE', 'yith-prelaunch-options.php' );
-define( 'YITH_PRELAUNCH_VERSION', '1.3.0' );
+define( 'YITH_PRELAUNCH_VERSION', '1.3.1' );
 
 // Load required classes and functions
 require_once('functions.yith-prelaunch.php');
